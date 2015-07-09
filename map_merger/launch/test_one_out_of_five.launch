@@ -1,14 +1,16 @@
 <?xml version="1.0"?>
 <launch>
-	<!-- 
-for future purpose so that we could change the amount of robots on map
-<arg name="num_of_robots" default="3" /> !-->
 <arg name="robot_macs" default="robot_0,00:00:00:00:11:00!robot_1,00:00:00:00:00:11!robot_2,00:00:00:00:00:22!robot_3,00:00:00:00:00:33!robot_4,00:00:00:00:00:44!" />
 <arg name="log_path" default="$(env HOME)/logs" />
 <arg name="robot_local_map_frame" default="map" />
 
-<node pkg="stage_ros" type="stageros" name="simulation" args="$(find adhoc_communication)/world/sim_world.world" />
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_1" ns="robot1">
+<!--
+	Start simulation.
+	As far as we have multiple robots in Stage, we will have different namespace for each of them and navigate it later.
+!-->
+<node required="true" pkg="stage_ros" type="stageros" name="simulation" args="$(find adhoc_communication)/world/sim_world.world" />
+
+<node respawn="true" pkg="adhoc_communication" type="adhoc_communication" name="robot_1" ns="robot_1">
 	<param name="mac" value="00:00:00:00:00:11"/>
 	<param name="robot_name" value="robot_1"/>
 	<param name="interface" value="lo"/>
@@ -27,7 +29,7 @@ for future purpose so that we could change the amount of robots on map
 	<param name="sim_robot_macs" value="$(arg robot_macs)" />
 	<param name="p_tx" value="1" />
 </node>
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_2" ns="robot2">
+<node respawn="true" pkg="adhoc_communication" type="adhoc_communication" name="robot_2" ns="robot_2">
 	<param name="mac" value="00:00:00:00:00:22"/>
 	<param name="robot_name" value="robot_2"/>
 	<param name="interface" value="lo"/>
@@ -46,7 +48,7 @@ for future purpose so that we could change the amount of robots on map
 	<param name="sim_robot_macs" value="$(arg robot_macs)" />
 	<param name="p_tx" value="1" />
 </node>
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_3" ns="robot3">
+<node respawn="true" pkg="adhoc_communication" type="adhoc_communication" name="robot_3" ns="robot3">
 	<param name="mac" value="00:00:00:00:00:33"/>
 	<param name="robot_name" value="robot_3"/>
 	<param name="interface" value="lo"/>
@@ -65,15 +67,14 @@ for future purpose so that we could change the amount of robots on map
 	<param name="sim_robot_macs" value="$(arg robot_macs)" />
 	<param name="p_tx" value="1" />
 </node>
-<node name="teleop_twist_keyboard_1" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t robot_1/cmd_vel" />
-<node pkg="map_merger" type="map_merger" name="map_merger_1" output="screen" ns="robot1">
+<node pkg="map_merger" type="map_merger" name="map_merger_1" output="screen" ns="robot_1">
    	<param name="log_path" value="$(arg log_path)" />
 	<param name="robot_name" value="robot_1" />
 	<param name="robot_prefix" value="" />
 	<param name="local_map_frame_id" value="$(arg robot_local_map_frame)"/>
 	<param name="exchange_position" value="true" />
 	<param name="has_local_map" value="true" />
-	<param name="position_local_robot_topic" value="odom" />
+	<param name="position_local_robot_topic" value="/robot_1/odom" />
 	<param name="seconds_send_timer" value="8" />
 	<param name="seconds_pub_timer" value="6" />
 	<param name="seconds_recompute_transform" value="25" />
@@ -81,9 +82,33 @@ for future purpose so that we could change the amount of robots on map
 	<param name="position_other_robots_topic" value="/position_other_robots"/>       
     	<param name="split_size" value="2048" />
     	<param name="splitted" value="true" />
-    	<param name="local_map_topic" value="/map" />
-    	<param name="meta_topic_over_network" value="/map_meta" />
-    	<param name="local_map_metadata_topic" value="/map_metadata" />
+    	<param name="local_map_topic" value="/robot_1/map" />
+    	<param name="meta_topic_over_network" value="/robot_1/map_meta" />
+    	<param name="local_map_metadata_topic" value="/robot_1/map_metadata" />
 </node>
-<node name="slam_gmapping_1" pkg="gmapping" type="slam_gmapping" output="screen" ns="robot1" launch-prefix="xterm -e" args="scan:=/robot_1/base_scan _odom_frame:=/robot_1/odom" />
+<!--
+	Make our robot movable with this simple package. 
+	NOTICE: The package should be not from original, but from https://github.com/LeoSko/teleop_twist_keyboard
+!-->
+<node name="teleop_twist_keyboard_1" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t robot_1/cmd_vel" respawn="true"/>
+<!--
+because of some bug we should run this in different terminal
+<node name="slam_gmapping" pkg="gmapping" type="slam_gmapping">
+	<param name="scan" value="/robot_0/base_scan" />
+</node>
+	We remap scan topic so that gmapping could read from it, map topic so that map_merger could read from them.
+	Parameters stand for gmapping input also.
+!-->
+<node name="slam_gmapping_1" pkg="gmapping" type="slam_gmapping" output="screen" launch-prefix="xterm -e" ns="robot_1">
+<rosparam>
+odom_frame: /robot_1/odom
+base_frame: /robot_1/base_link
+</rosparam>
+	<remap from="scan" to="/robot_1/base_scan"/>
+	<remap from="map" to="/robot_1/map"/>
+</node>
+<!--
+  Visualising the robot while building a map or navigating.
+!-->
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find map_merger)/rviz/test_one_out_of_five.rviz"/>
 </launch>
