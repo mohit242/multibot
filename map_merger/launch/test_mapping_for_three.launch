@@ -155,4 +155,8 @@ throttle_scans: 3
 	<remap from="map" to="/robot_3/map"/>
 	<remap from="map_metadata" to="/robot_3/map_metadata"/>
 </node>
+<!--
+  Visualising the robot while building a map or navigating.
+!-->
+<node pkg="rviz" type="rviz" name="rviz" args="-d $(find map_merger)/rviz/test_mapping_for_three.rviz"/>
 </launch>
