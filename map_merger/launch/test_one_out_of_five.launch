@@ -48,7 +48,7 @@
 	<param name="sim_robot_macs" value="$(arg robot_macs)" />
 	<param name="p_tx" value="1" />
 </node>
-<node respawn="true" pkg="adhoc_communication" type="adhoc_communication" name="robot_3" ns="robot3">
+<node respawn="true" pkg="adhoc_communication" type="adhoc_communication" name="robot_3" ns="robot_3">
 	<param name="mac" value="00:00:00:00:00:33"/>
 	<param name="robot_name" value="robot_3"/>
 	<param name="interface" value="lo"/>
@@ -79,7 +79,7 @@
 	<param name="seconds_pub_timer" value="6" />
 	<param name="seconds_recompute_transform" value="25" />
 	<param name="seconds_send_position" value="6" />
-	<param name="position_other_robots_topic" value="/position_other_robots"/>       
+	<param name="position_other_robots_topic" value="/robot_1/position_other_robots"/>       
     	<param name="split_size" value="2048" />
     	<param name="splitted" value="true" />
     	<param name="local_map_topic" value="/robot_1/map" />
@@ -103,6 +103,7 @@ because of some bug we should run this in different terminal
 <rosparam>
 odom_frame: /robot_1/odom
 base_frame: /robot_1/base_link
+throttle_scans: 3
 </rosparam>
 	<remap from="scan" to="/robot_1/base_scan"/>
 	<remap from="map" to="/robot_1/map"/>
