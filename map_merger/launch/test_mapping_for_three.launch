@@ -8,7 +8,7 @@ for future purpose so that we could change the amount of robots on map
 <arg name="robot_local_map_frame" default="map" />
 
 <node pkg="stage_ros" type="stageros" name="simulation" args="$(find adhoc_communication)/world/sim_world.world" />
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_1" ns="robot1">
+<node pkg="adhoc_communication" type="adhoc_communication" name="robot_1" ns="robot_1">
 	<param name="mac" value="00:00:00:00:00:11"/>
 	<param name="robot_name" value="robot_1"/>
 	<param name="interface" value="lo"/>
@@ -27,7 +27,7 @@ for future purpose so that we could change the amount of robots on map
 	<param name="sim_robot_macs" value="$(arg robot_macs)" />
 	<param name="p_tx" value="1" />
 </node>
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_2" ns="robot2">
+<node pkg="adhoc_communication" type="adhoc_communication" name="robot_2" ns="robot_2">
 	<param name="mac" value="00:00:00:00:00:22"/>
 	<param name="robot_name" value="robot_2"/>
 	<param name="interface" value="lo"/>
@@ -46,7 +46,7 @@ for future purpose so that we could change the amount of robots on map
 	<param name="sim_robot_macs" value="$(arg robot_macs)" />
 	<param name="p_tx" value="1" />
 </node>
-<node pkg="adhoc_communication" type="adhoc_communication" name="robot_3" ns="robot3">
+<node pkg="adhoc_communication" type="adhoc_communication" name="robot_3" ns="robot_3">
 	<param name="mac" value="00:00:00:00:00:33"/>
 	<param name="robot_name" value="robot_3"/>
 	<param name="interface" value="lo"/>
@@ -65,67 +65,94 @@ for future purpose so that we could change the amount of robots on map
 	<param name="sim_robot_macs" value="$(arg robot_macs)" />
 	<param name="p_tx" value="1" />
 </node>
-<node name="teleop_twist_keyboard_1" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t robot_1/cmd_vel" ns="robot1"/>
-<node name="teleop_twist_keyboard_2" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t robot_2/cmd_vel" ns="robot2"/>
-<node name="teleop_twist_keyboard_3" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t robot_3/cmd_vel" ns="robot3"/>
-<node pkg="map_merger" type="map_merger" name="map_merger_1" output="screen" ns="robot1">
+<node name="teleop_twist_keyboard_1" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t robot_1/cmd_vel" />
+<node name="teleop_twist_keyboard_2" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t robot_2/cmd_vel" />
+<node name="teleop_twist_keyboard_3" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t robot_3/cmd_vel" />
+<node pkg="map_merger" type="map_merger" name="map_merger_1" output="screen" ns="robot_1">
    	<param name="log_path" value="$(arg log_path)" />
 	<param name="robot_name" value="robot_1" />
-	<param name="robot_prefix" value="robot_1" />
+	<param name="robot_prefix" value="" />
 	<param name="local_map_frame_id" value="$(arg robot_local_map_frame)"/>
 	<param name="exchange_position" value="true" />
 	<param name="has_local_map" value="true" />
-	<param name="position_local_robot_topic" value="robot_1/odom" />
+	<param name="position_local_robot_topic" value="/robot_1/odom" />
 	<param name="seconds_send_timer" value="8" />
 	<param name="seconds_pub_timer" value="6" />
 	<param name="seconds_recompute_transform" value="25" />
 	<param name="seconds_send_position" value="6" />
-	<param name="position_other_robots_topic" value="robot_1/position_other_robots"/>       
+	<param name="position_other_robots_topic" value="/robot_1/position_other_robots"/>       
     	<param name="split_size" value="2048" />
     	<param name="splitted" value="true" />
-    	<param name="local_map_topic" value="robot_1/map" />
-    	<param name="meta_topic_over_network" value="robot_1/map_meta" />
-    	<param name="local_map_metadata_topic" value="robot_1/map_metadata" />
+    	<param name="local_map_topic" value="/robot_1/map" />
+    	<param name="meta_topic_over_network" value="/robot_1/map_meta" />
+    	<param name="local_map_metadata_topic" value="/robot_1/map_metadata" />
 </node>
-<node pkg="map_merger" type="map_merger" name="map_merger_2" output="screen" ns="robot2">
+<node pkg="map_merger" type="map_merger" name="map_merger_2" output="screen" ns="robot_2">
    	<param name="log_path" value="$(arg log_path)" />
 	<param name="robot_name" value="robot_2" />
-	<param name="robot_prefix" value="robot_2" />
+	<param name="robot_prefix" value="" />
 	<param name="local_map_frame_id" value="$(arg robot_local_map_frame)"/>
 	<param name="exchange_position" value="true" />
 	<param name="has_local_map" value="true" />
-	<param name="position_local_robot_topic" value="robot_2/odom" />
+	<param name="position_local_robot_topic" value="/robot_2/odom" />
 	<param name="seconds_send_timer" value="8" />
 	<param name="seconds_pub_timer" value="6" />
 	<param name="seconds_recompute_transform" value="25" />
 	<param name="seconds_send_position" value="6" />
-	<param name="position_other_robots_topic" value="robot_2/position_other_robots"/>       
+	<param name="position_other_robots_topic" value="/robot_2/position_other_robots"/>       
     	<param name="split_size" value="2048" />
     	<param name="splitted" value="true" />
-    	<param name="local_map_topic" value="robot_2/map" />
-    	<param name="meta_topic_over_network" value="robot_2/map_meta" />
-    	<param name="local_map_metadata_topic" value="robot_2/map_metadata" />
+    	<param name="local_map_topic" value="/robot_2/map" />
+    	<param name="meta_topic_over_network" value="/robot_2/map_meta" />
+    	<param name="local_map_metadata_topic" value="/robot_2/map_metadata" />
 </node>
-<node pkg="map_merger" type="map_merger" name="map_merger_3" output="screen" ns="robot3">
+<node pkg="map_merger" type="map_merger" name="map_merger_3" output="screen" ns="robot_3">
    	<param name="log_path" value="$(arg log_path)" />
 	<param name="robot_name" value="robot_3" />
-	<param name="robot_prefix" value="robot_3" />
+	<param name="robot_prefix" value="" />
 	<param name="local_map_frame_id" value="$(arg robot_local_map_frame)"/>
 	<param name="exchange_position" value="true" />
 	<param name="has_local_map" value="true" />
-	<param name="position_local_robot_topic" value="robot_3/odom" />
+	<param name="position_local_robot_topic" value="/robot_3/odom" />
 	<param name="seconds_send_timer" value="8" />
 	<param name="seconds_pub_timer" value="6" />
 	<param name="seconds_recompute_transform" value="25" />
 	<param name="seconds_send_position" value="6" />
-	<param name="position_other_robots_topic" value="robot_3/position_other_robots"/>       
+	<param name="position_other_robots_topic" value="/robot_3/position_other_robots"/>       
     	<param name="split_size" value="2048" />
     	<param name="splitted" value="true" />
-    	<param name="local_map_topic" value="robot_3/map" />
-    	<param name="meta_topic_over_network" value="robot_3/map_meta" />
-    	<param name="local_map_metadata_topic" value="robot_3/map_metadata" />
+    	<param name="local_map_topic" value="/robot_3/map" />
+    	<param name="meta_topic_over_network" value="/robot_3/map_meta" />
+    	<param name="local_map_metadata_topic" value="/robot_3/map_metadata" />
 </node>
-<node name="slam_gmapping_1" pkg="gmapping" type="slam_gmapping" output="screen" ns="robot1" launch-prefix="xterm -e" args="scan:=/robot_1/base_scan" />
-<node name="slam_gmapping_2" pkg="gmapping" type="slam_gmapping" output="screen" ns="robot2" launch-prefix="xterm -e" args="scan:=/robot_2/base_scan" />
-<node name="slam_gmapping_3" pkg="gmapping" type="slam_gmapping" output="screen" ns="robot3" launch-prefix="xterm -e" args="scan:=/robot_3/base_scan" />
+<node name="slam_gmapping_1" pkg="gmapping" type="slam_gmapping" output="screen" launch-prefix="xterm -e" ns="robot_1">
+<rosparam>
+odom_frame: /robot_1/odom
+base_frame: /robot_1/base_link
+throttle_scans: 3
+</rosparam>
+	<remap from="scan" to="/robot_1/base_scan"/>
+	<remap from="map" to="/robot_1/map"/>
+	<remap from="map_metadata" to="/robot_1/map_metadata"/>
+</node>
+<node name="slam_gmapping_2" pkg="gmapping" type="slam_gmapping" output="screen" launch-prefix="xterm -e" ns="robot_2">
+<rosparam>
+odom_frame: /robot_2/odom
+base_frame: /robot_2/base_link
+throttle_scans: 3
+</rosparam>
+	<remap from="scan" to="/robot_2/base_scan"/>
+	<remap from="map" to="/robot_2/map"/>
+	<remap from="map_metadata" to="/robot_2/map_metadata"/>
+</node>
+<node name="slam_gmapping_3" pkg="gmapping" type="slam_gmapping" output="screen" launch-prefix="xterm -e" ns="robot_3">
+<rosparam>
+odom_frame: /robot_3/odom
+base_frame: /robot_3/base_link
+throttle_scans: 3
+</rosparam>
+	<remap from="scan" to="/robot_3/base_scan"/>
+	<remap from="map" to="/robot_3/map"/>
+	<remap from="map_metadata" to="/robot_3/map_metadata"/>
+</node>
 </launch>
