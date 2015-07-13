@@ -8,8 +8,8 @@ define topurg ranger
 (
 	sensor( 			
     range [ 0.0  30.0 ]
-    fov 270.25
-   samples 1081
+    fov 120.0
+   samples 200
   )
 
   # generic model properties
@@ -48,14 +48,16 @@ define floorplan model
 resolution 0.02
 
 interval_sim 100  # simulation timestep in milliseconds
+threads 2
 
 
 window
 ( 
   size [ 745 448 ] 
+  center [ -18.000 20.000 ]
 
-  rotate [ 0.000 2.940 ]
-  scale 14.782 
+  rotate [ 0.000 0.000 ]
+  scale 18.000
 )
 
 # load an environment bitmap
@@ -70,8 +72,8 @@ floorplan
 # throw in a robot
 erratic( pose [ -7.780 23.262 0.000 180.000 ] name "robot_0" color "blue")
 erratic( pose [ -16.263 19.368 0.000 180.000 ] name "robot_1" color "yellow")
-erratic( pose [ -25.277 23.266 0.000 180.000 ] name "robot_2" color "red")
-erratic( pose [ -32.669 24.888 0.000 180.000 ] name "robot_3" color "green")
+erratic( pose [ -17.277 20.667 0.000 180.000 ] name "robot_2" color "red")
+erratic( pose [ -18.669 20.888 0.000 180.000 ] name "robot_3" color "green")
 erratic( pose [ -40.630 23.006 0.000 180.000 ] name "robot_4" color "pink")
 
 
