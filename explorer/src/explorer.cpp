@@ -92,10 +92,11 @@ public:
                 
                 if(robot_prefix.empty())
                 {
-                    char hostname_c[1024];
+                    /*char hostname_c[1024];
                     hostname_c[1023] = '\0';
                     gethostname(hostname_c, 1023);
-                    robot_name = std::string(hostname_c);
+                    robot_name = std::string(hostname_c);*/
+			nh.param<std::string>("robot_name",robot_name,"unknown_robot");
                     ROS_INFO("NO SIMULATION! Robot name: %s", robot_name.c_str());
                                         
                     /*
@@ -162,34 +163,38 @@ public:
 		costmap2d_global->pause();
 		ROS_DEBUG("Pausing performed");
 
-		ROS_DEBUG("                                             ");
-
-                if(OPERATE_ON_GLOBAL_MAP == true)
+                if (OPERATE_ON_GLOBAL_MAP == true)
                 {
-                    costmap2d_local_size = new costmap_2d::Costmap2DROS("local_costmap", tf);
-                    costmap2d_local_size->pause();
-                    ROS_DEBUG("Starting Global costmap ...");
-                    costmap2d_global->start();
-                    costmap2d_local_size->start();
-                    
-                    costmap2d_local = costmap2d_global;                   
-                }
+			costmap2d_local_size = new costmap_2d::Costmap2DROS("local_costmap", tf);
+			costmap2d_local_size->pause();
+			ROS_INFO("Starting Global costmap ...");
+			costmap2d_global->start();
+			costmap2d_local_size->start();
+
+			//costmap2d_global = costmap2d_local_size;
+
+			costmap2d_local = costmap2d_global;
+			//if (costmap2d_local == costmap2d_global)
+			//{
+			//	ROS_DEBUG("local costmap ptr == global costmap ptr");
+		        //}
+		}
                 else
                 {
-                    ROS_INFO("Creating local costmap ...");
-                    costmap2d_local = new costmap_2d::Costmap2DROS("local_costmap", tf);
-                    ROS_INFO("Local costmap created ... now performing costmap -> pause");
-                    costmap2d_local->pause();
-                    ROS_INFO("Pausing performed");
-                    ROS_INFO("Cost maps created");
+			ROS_INFO("Creating local costmap ...");
+			costmap2d_local = new costmap_2d::Costmap2DROS("local_costmap", tf);
+			ROS_INFO("Local costmap created ... now performing costmap -> pause");
+			costmap2d_local->pause();
+			ROS_INFO("Pausing performed");
+			ROS_INFO("Cost maps created");
 
-                    ROS_INFO("                                             ");
+			ROS_INFO("                                             ");
 
-                    ROS_INFO("Starting Global costmap ...");
-                    costmap2d_global->start();
-                    ROS_INFO("Starting Local costmap ... ");
-                    costmap2d_local->start();
-                    ROS_INFO("BOTH COSTMAPS STARTED AND RUNNING ...");
+			ROS_INFO("Starting Global costmap ...");
+			costmap2d_global->start();
+			ROS_INFO("Starting Local costmap ... ");
+			costmap2d_local->start();
+			ROS_INFO("BOTH COSTMAPS STARTED AND RUNNING ...");
                 }
 		ROS_INFO("---------------- COSTMAP DONE ---------------");
 
@@ -254,6 +259,7 @@ public:
                 twi.angular.z = 0.75;
                 twi_publisher.publish(twi);
                 ros::Duration(5.0).sleep();
+		twi.angular.z = -0.75; //so that we like didn't do anything ;)
                 twi_publisher.publish(twi);
                 /*
                  * START TAKING THE TIME DURING EXPLORATION     
@@ -263,6 +269,7 @@ public:
                 
 		while (exploration_finished == false) 
                 {
+			ROS_DEBUG("exploration now finished, continue");
                     Simulation == false; 
                     if(Simulation == false)
                     {
@@ -575,7 +582,7 @@ public:
                                         else
                                         {
                                             cluster_element = int(exploration->clusters.size()*rand()/(RAND_MAX));
-                                            ROS_INFO("Random cluster_element: %d  from available %lu clusters", cluster_element, exploration->clusters.size());
+                                            ROS_INFO("Random cluster_element: %d  from available %u clusters", cluster_element, exploration->clusters.size());
                                         }
                                         count++;
                                     }
@@ -1105,7 +1112,7 @@ public:
             std::string robo_name = prefix.append(robot_number.str());    
             std::string file_suffix(".finished");
 
-            std::string ros_package_path = ros::package::getPath("multi_robot_analyzer");
+            std::string ros_package_path = ros::package::getPath("explorer");
             std::string status_path = ros_package_path + status_directory;
             std::string status_file = status_path + robo_name + file_suffix;
 
@@ -1304,7 +1311,7 @@ public:
 		{
 			rotation_counter++;
 //                        ROS_INFO("In navigation .... cluster_available: %lu     counter: %d", clusters_available_in_pool.size(), counter_waiting_for_clusters);
-			 ROS_INFO("In navigation .... cluster_available: %lu     counter: %d", exploration->clusters.size(), counter_waiting_for_clusters);			
+			 ROS_INFO("In navigation .... cluster_available: %u     counter: %d", exploration->clusters.size(), counter_waiting_for_clusters);			
 //                        if(clusters_available_in_pool.size() <= 0 || counter_waiting_for_clusters > 10) //(rotation_counter >= 2)
 			if(exploration->clusters.size() == 0 || counter_waiting_for_clusters > 10) //(rotation_counter >= 2)
                         {

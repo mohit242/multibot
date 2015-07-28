@@ -1,4 +1,12 @@
 local_costmap:
+   observation_sources: scan
+   scan/topic: /base_scan
+   scan/data_type: LaserScan
+   scan/expected_update_rate: 10
+   scan/clearing: true
+   scan/marking: true
+   global_frame: /odom
+   map_topic: map_merger/global_map
    update_frequency: 1.0
    publish_frequency: 1.0
    static_map: false

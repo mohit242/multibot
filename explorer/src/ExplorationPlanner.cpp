@@ -298,14 +298,14 @@ bool ExplorationPlanner::clusterFrontiers()
     
         for(int i = 0; i < frontiers.size(); i++)
         {
-            ROS_DEBUG("Frontier at: %d   and cluster size: %lu",i, clusters.size());
+            ROS_DEBUG("Frontier at: %d   and cluster size: %u",i, clusters.size());
             cluster_found_flag = false;
             bool frontier_used = false;
             same_id = false;
             
             for(int j = 0; j < clusters.size(); j++)
             {
-                ROS_DEBUG("cluster %d contains %lu elements", j, clusters.at(j).cluster_element.size());
+                ROS_DEBUG("cluster %d contains %u elements", j, clusters.at(j).cluster_element.size());
                 for(int n = 0; n < clusters.at(j).cluster_element.size(); n++)
                 {
                    ROS_DEBUG("accessing cluster %d  and element: %d", j, n);
@@ -1426,7 +1426,7 @@ bool ExplorationPlanner::publish_negotiation_list(frontier_t negotiation_frontie
 //
 //        negotiation_msg.frontier_element.push_back(negotiation_element);
 ////        pub_negotion.publish(negotiation_msg);
-//        sendToMulticast("mc_",negotiation_msg, "negotiation_list");
+//        шnitisendToMulticast("mc_",negotiation_msg, "negotiation_list");
 //    }
     
     if(cluster_number != -1)
@@ -1871,7 +1871,7 @@ void ExplorationPlanner::positionCallback(const adhoc_communication::MmListOfPoi
     position_mutex.lock();
     
     other_robots_positions.positions.clear();
-    ROS_INFO("positions size: %lu", msg.get()->positions.size());
+    ROS_INFO("positions size: %u", msg.get()->positions.size());
     for(int i = 0; i < msg.get()->positions.size(); i++)
     {    
         other_robots_positions.positions.push_back(msg.get()->positions.at(i));
@@ -2946,7 +2946,7 @@ void ExplorationPlanner::findFrontiers() {
 			allFrontiers.push_back(new_frontier_point);
 		}
 	}
-        ROS_INFO("Found %lu frontier cells which are transformed into frontiers points. Starting transformation...", allFrontiers.size());
+        ROS_INFO("Found %u frontier cells which are transformed into frontiers points. Starting transformation...", allFrontiers.size());
 
 	/*
 	 * Iterate over all frontiers. The frontiers stored in allFrontiers are
@@ -3041,7 +3041,7 @@ void ExplorationPlanner::findFrontiers() {
 		}
 	}
 
-	ROS_INFO("Size of all frontiers in the list: %lu", frontiers.size());
+	ROS_INFO("Size of all frontiers in the list: %u", frontiers.size());
 }
 
 
@@ -3377,7 +3377,7 @@ bool ExplorationPlanner::selectClusterBasedOnAuction(std::vector<double> *goal, 
      * Calculate my own auction BIDs to all my clusters
      * and store them in the auction vector
      */
-    ROS_INFO("Cluster Size: %lu", clusters.size());
+    ROS_INFO("Cluster Size: %u", clusters.size());
     for(int i = 0; i < clusters.size(); i++)
     {        
         ROS_INFO("Calculate cluster with ID: %d", clusters.at(i).id);
@@ -3490,10 +3490,10 @@ bool ExplorationPlanner::selectClusterBasedOnAuction(std::vector<double> *goal, 
     for(int i = 0; i < row; i++)
     {
         ROS_INFO("                 ");
-        ROS_INFO("****** i: %d   auction size: %lu ******", i, auction.size());
+        ROS_INFO("****** i: %d   auction size: %u ******", i, auction.size());
         for(int j = 0; j < col; j++)
         {     
-            ROS_INFO("j: %d   cluster size: %lu", j, clusters.size());
+            ROS_INFO("j: %d   cluster size: %u", j, clusters.size());
             bool found_a_bid = false;
             bool cluster_valid_flag = false; 
             
@@ -3563,7 +3563,7 @@ bool ExplorationPlanner::selectClusterBasedOnAuction(std::vector<double> *goal, 
                 other_robots_position_x = -1;
                 other_robots_position_y = -1;
                 
-                ROS_INFO("---- clusters: %lu element size: %lu  robots positions: %lu ----", clusters.size(), clusters.at(j).cluster_element.size(), other_robots_positions.positions.size());
+                ROS_INFO("---- clusters: %u element size: %u  robots positions: %u ----", clusters.size(), clusters.at(j).cluster_element.size(), other_robots_positions.positions.size());
                 for(int d = 0; d < clusters.at(j).cluster_element.size(); d++)
                 {
                     ROS_INFO("Access clusters.at(%d).cluster_element.at(%d)", j, d);
@@ -4598,7 +4598,7 @@ void ExplorationPlanner::sort(int strategy)
                 {
                     if (clusters.at(cluster_number).cluster_element.size() > 0) 
                     {
-                        ROS_DEBUG("Cluster %d  size: %lu",cluster_number, clusters.at(cluster_number).cluster_element.size());
+                        ROS_DEBUG("Cluster %d  size: %u",cluster_number, clusters.at(cluster_number).cluster_element.size());
                             for (int i = clusters.at(cluster_number).cluster_element.size(); i > 0; i--) 
                             {
                                 ROS_DEBUG("Cluster element size: %d", i);
@@ -5307,7 +5307,7 @@ void ExplorationPlanner::setupMapData() {
 //	  }else
 //	  {
 //		  ROS_DEBUG("%d",(int)occupancy_grid_array_[i]);
-//		  //occupancy_grid_array_[i] = '0'; // write 0 to the grid!
+		  //occupancy_grid_array_[i] = '0'; // write 0 to the grid!
 //	  }
 	}
 	ROS_INFO("--------------------- Iterate through Costmap --------------------");

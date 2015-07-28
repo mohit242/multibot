@@ -3,11 +3,10 @@
 <launch>
 
 
-  <arg name="turtlebot" default="true"/>
+  <arg name="turtlebot" default="false"/>
   <arg name="pioneer" default="false"/>
-  <arg name="simulation" default="false"/>
-
-  <param name="log_path" value="$(arg log_path)" />
+  <arg name="simulation" default="true"/>
+  <arg name="log_path" default="$(env HOME)/logs" />
 
 
 <group if="$(arg simulation)">
