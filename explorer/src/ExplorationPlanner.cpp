@@ -605,21 +605,21 @@ bool ExplorationPlanner::clusterFrontiers()
 
 void ExplorationPlanner::visualizeClustersConsole()
 {
-    ROS_INFO("------------------------------------------------------------------");
+    ROS_DEBUG("------------------------------------------------------------------");
     for(int j = 0; j < clusters.size(); j++)
     {
         for(int n = 0; n < clusters.at(j).cluster_element.size(); n++)
         {
             if(robot_prefix_empty_param == true)
             {
-                ROS_INFO("ID: %6d  x: %5.2f  y: %5.2f  cluster: %5d   robot: %s", clusters.at(j).cluster_element.at(n).id, clusters.at(j).cluster_element.at(n).x_coordinate, clusters.at(j).cluster_element.at(n).y_coordinate, clusters.at(j).id, clusters.at(j).cluster_element.at(n).detected_by_robot_str.c_str());
+                ROS_DEBUG("ID: %6d  x: %5.2f  y: %5.2f  cluster: %5d   robot: %s", clusters.at(j).cluster_element.at(n).id, clusters.at(j).cluster_element.at(n).x_coordinate, clusters.at(j).cluster_element.at(n).y_coordinate, clusters.at(j).id, clusters.at(j).cluster_element.at(n).detected_by_robot_str.c_str());
             }else
             {
-                ROS_INFO("ID: %6d  x: %5.2f  y: %5.2f  cluster: %5d   dist: %d", clusters.at(j).cluster_element.at(n).id, clusters.at(j).cluster_element.at(n).x_coordinate, clusters.at(j).cluster_element.at(n).y_coordinate, clusters.at(j).id, clusters.at(j).cluster_element.at(n).dist_to_robot);
+                ROS_DEBUG("ID: %6d  x: %5.2f  y: %5.2f  cluster: %5d   dist: %d", clusters.at(j).cluster_element.at(n).id, clusters.at(j).cluster_element.at(n).x_coordinate, clusters.at(j).cluster_element.at(n).y_coordinate, clusters.at(j).id, clusters.at(j).cluster_element.at(n).dist_to_robot);
             }            
         }           
     }
-    ROS_INFO("------------------------------------------------------------------");
+    ROS_DEBUG("------------------------------------------------------------------");
 }
 
 //std::string ExplorationPlanner::lookupRobotName(int robot_name_int)
