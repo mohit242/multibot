@@ -1,5 +1,7 @@
 global_costmap:
+   robot_base_frame: /base_footprint
    map_topic: map_merger/global_map
+   global_frame: /map
    update_frequency: 0.166
    publish_frequency: 0.166 #10.0
    static_map: true
