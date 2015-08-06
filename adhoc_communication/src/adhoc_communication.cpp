@@ -2887,7 +2887,7 @@ void processIncomingFrames()
                     }
                     else if (getMillisecondsTime() - p.ts_ > INTERVAL_DELETE_OLD_PACKETS)
                     {
-                        ROS_INFO("DROP UNFINISHED PACKET: ID[%u] SOURCE[%s] SIZE[%u/%lu]", p.id_, p.hostname_source_.c_str(), p.size_, p.frames_l_.size());
+                        ROS_INFO("DROP UNFINISHED PACKET: ID[%u] SOURCE[%s] SIZE[%u/%u]", p.id_, p.hostname_source_.c_str(), p.size_, p.frames_l_.size());
                         p_i = packets_incomplete_l.erase(p_i);
                     }
                     else

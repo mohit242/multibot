@@ -253,7 +253,7 @@ void McHandler::printMcGroups()
     for (std::list<McTree*>::iterator it = groups_->begin(); it != groups_->end(); ++it)
     {
         McTree* tree = *it;
-        ROS_ERROR("NAME:[%s] ACTIVE[%u] ENTRIES: UP[%lu] DOWN[%lu] WAITING[%lu] DOWNLINKS[%lu]", tree->group_name_.c_str(), tree->activated, tree->routing_entries_l_.size(), tree->routing_entries_downlinks_l_.size(), tree->waiting_requests_l_.size(), tree->downlinks_l_.size());
+        ROS_ERROR("NAME:[%s] ACTIVE[%u] ENTRIES: UP[%u] DOWN[%u] WAITING[%u] DOWNLINKS[%u]", tree->group_name_.c_str(), tree->activated, tree->routing_entries_l_.size(), tree->routing_entries_downlinks_l_.size(), tree->waiting_requests_l_.size(), tree->downlinks_l_.size());
     }
 }
 #endif 

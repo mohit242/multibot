@@ -1597,7 +1597,7 @@ void ExplorationPlanner::negotiationCallback(const adhoc_communication::ExpFront
             }
             if(entry_found == false)
             {
-                ROS_DEBUG("Negotiation frontier with ID: %ld", frontier_element.id);
+                ROS_DEBUG("Negotiation frontier with ID: %lld", frontier_element.id);
                 frontier_t negotiation_frontier;
                 negotiation_frontier.detected_by_robot = frontier_element.detected_by_robot;
                 negotiation_frontier.id = frontier_element.id;
@@ -2358,11 +2358,11 @@ void ExplorationPlanner::frontierCallback(const adhoc_communication::ExpFrontier
             
             if(robot_prefix_empty_param == true)
             {
-                ROS_DEBUG("Received New Frontier with ID: %ld  Robot: %s", frontier_element.id, frontier_element.detected_by_robot_str.c_str());
+                ROS_DEBUG("Received New Frontier with ID: %lld  Robot: %s", frontier_element.id, frontier_element.detected_by_robot_str.c_str());
                 storeFrontier(frontier_element.x_coordinate, frontier_element.y_coordinate, frontier_element.detected_by_robot, frontier_element.detected_by_robot_str, frontier_element.id);
             }else
             {
-                ROS_DEBUG("Received New Frontier of Robot %ld with ID %ld", frontier_element.detected_by_robot, frontier_element.id);
+                ROS_DEBUG("Received New Frontier of Robot %lld with ID %lld", frontier_element.detected_by_robot, frontier_element.id);
                 if(frontier_element.detected_by_robot != robot_name)
                 {
                     storeFrontier(frontier_element.x_coordinate, frontier_element.y_coordinate, frontier_element.detected_by_robot, "", frontier_element.id); 
@@ -2400,10 +2400,10 @@ void ExplorationPlanner::visited_frontierCallback(const adhoc_communication::Exp
         }
         if (result == true)
         {
-            ROS_DEBUG("Received New Visited Frontier of Robot %ld with ID %ld", frontier_element.detected_by_robot, frontier_element.id);
+            ROS_DEBUG("Received New Visited Frontier of Robot %lld with ID %lld", frontier_element.detected_by_robot, frontier_element.id);
             if(robot_prefix_empty_param == true)
             {
-                ROS_DEBUG("Storing Visited Frontier ID: %ld  Robot: %s", frontier_element.id, frontier_element.detected_by_robot_str.c_str());
+                ROS_DEBUG("Storing Visited Frontier ID: %lld  Robot: %s", frontier_element.id, frontier_element.detected_by_robot_str.c_str());
                 storeVisitedFrontier(frontier_element.x_coordinate, frontier_element.y_coordinate, frontier_element.detected_by_robot, frontier_element.detected_by_robot_str, frontier_element.id);
             }else
             {

@@ -12,9 +12,9 @@ void updateManager::addNewUpdateList()
 
 void updateManager::addToupdateList(int indexOfMap, std::vector < int > values)
 {
-    ROS_DEBUG("in addToupdateList,indexOfMap:%i,size of values:%lu",indexOfMap,values.size());
+    ROS_DEBUG("in addToupdateList,indexOfMap:%i,size of values:%u",indexOfMap,values.size());
     std::vector<int>* tmp = updateInformation->at(indexOfMap);
-    ROS_DEBUG("in addToupdateList size tmp:%lu",tmp->size());
+    ROS_DEBUG("in addToupdateList size tmp:%u",tmp->size());
     bool add = true;
     if(values.size() == 1 && tmp->size() > 1)
     {
