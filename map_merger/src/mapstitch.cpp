@@ -99,7 +99,7 @@ StitchedMap::StitchedMap(Mat &img1, Mat &img2, int max_trans, int max_rotation, 
  // ROS_INFO("Found %i matches",matches.size());
   if(coord1.size() < 1)
   {
-      ROS_WARN("Problem by transforming map,this migth just an start up problem \n Coord1:%u",coord1.size());
+      ROS_WARN("Problem by transforming map,this migth just an start up problem \n Coord1:%zu",coord1.size());
       works = false;
       return;
   }
@@ -239,7 +239,7 @@ StitchedMap::StitchedMap(Mat &img1, Mat &img2, int max_trans, int max_rotation, 
              eudis = -1;
          else
              eudis = eudis / near1.size();
-         ROS_DEBUG("EudisNew:%f\t near1Size:%u:\toldTran:%i",eudis,near1.size(),oldTransform.empty());
+         ROS_DEBUG("EudisNew:%f\t near1Size:%zu:\toldTran:%i",eudis,near1.size(),oldTransform.empty());
          //calc EudisOld
 
          Mat thr3,tmp1;
@@ -297,7 +297,7 @@ StitchedMap::StitchedMap(Mat &img1, Mat &img2, int max_trans, int max_rotation, 
                 eudisOLD = eudisOLD / near1.size();
             //if(eudisOLD < eudis)
                // works = false;
-            ROS_WARN("EudisOLD:%f\t near1Size:%u:|works:%i",eudis,near1.size(),works);
+            ROS_WARN("EudisOLD:%f\t near1Size:%zu:|works:%i",eudis,near1.size(),works);
             //calc EudisOld
          /*  for(int i = 0; i < rects1.size(); i++)
            {

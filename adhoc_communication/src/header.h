@@ -614,11 +614,11 @@ void testPacket()
             ROS_ERROR("skip %u", packet_seq);
     }
 
-    ROS_ERROR("missings seq: %s %u %u %u", getListAsString(p.missed_sequences_l_).c_str(), p.size_, p.frames_l_.size(), p.missed_sequences_l_.size());
+    ROS_ERROR("missings seq: %s %u %zu %zu", getListAsString(p.missed_sequences_l_).c_str(), p.size_, p.frames_l_.size(), p.missed_sequences_l_.size());
 
     p.refreshLists();
 
-    ROS_ERROR("missings seq: %s %u %u %u", getListAsString(p.missed_sequences_l_).c_str(), p.size_, p.frames_l_.size(), p.missed_sequences_l_.size());
+    ROS_ERROR("missings seq: %s %u %zu %zu", getListAsString(p.missed_sequences_l_).c_str(), p.size_, p.frames_l_.size(), p.missed_sequences_l_.size());
 }
 
 bool gotFrameRecently(RoutedFrame rf)

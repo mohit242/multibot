@@ -133,7 +133,8 @@ private:
             exchange_position,
             local_map_new_data,
             force_recompute_all,
-            global_map_ready;
+            global_map_ready,
+            broadcast_map;
 //            convergente;
     cv::Mat lastTrans;
     ros::Publisher pub;
