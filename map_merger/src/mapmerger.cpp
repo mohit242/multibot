@@ -61,7 +61,7 @@ MapMerger::MapMerger()
     nodeHandle->param<bool>("debug",debug,true);
     nodeHandle->param<bool>("has_local_map",has_local_map,true);
     nodeHandle->param<bool>("exchange_position",exchange_position,false);
-    nodeHandle->param<bool>("broadcast_map",broadcast_map,true);
+    nodeHandle->param<bool>("broadcast_map",broadcast_map,false);
 
     nodeHandle->param<int>("split_size",size,32);
     nodeHandle->param<int>("seconds_meta_timer",seconds_meta_timer,5);
