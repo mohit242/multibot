@@ -582,7 +582,7 @@ public:
                                         else
                                         {
                                             cluster_element = int(exploration->clusters.size()*rand()/(RAND_MAX));
-                                            ROS_INFO("Random cluster_element: %d  from available %u clusters", cluster_element, exploration->clusters.size());
+                                            ROS_INFO("Random cluster_element: %d  from available %zu clusters", cluster_element, exploration->clusters.size());
                                         }
                                         count++;
                                     }
@@ -1311,7 +1311,7 @@ public:
 		{
 			rotation_counter++;
 //                        ROS_INFO("In navigation .... cluster_available: %lu     counter: %d", clusters_available_in_pool.size(), counter_waiting_for_clusters);
-			 ROS_INFO("In navigation .... cluster_available: %u     counter: %d", exploration->clusters.size(), counter_waiting_for_clusters);			
+			 ROS_INFO("In navigation .... cluster_available: %zu     counter: %d", exploration->clusters.size(), counter_waiting_for_clusters);			
 //                        if(clusters_available_in_pool.size() <= 0 || counter_waiting_for_clusters > 10) //(rotation_counter >= 2)
 			if(exploration->clusters.size() == 0 || counter_waiting_for_clusters > 10) //(rotation_counter >= 2)
                         {

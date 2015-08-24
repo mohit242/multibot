@@ -31,6 +31,8 @@
 #include <base_local_planner/trajectory_planner_ros.h>
 #include <math.h>
 
+#include <inttypes.h>
+
 #define MAX_DISTANCE 2000			// max distance to starting point
 #define MAX_GOAL_RANGE 0.2			// min distance between frontiers (search)
 #define MINIMAL_FRONTIER_RANGE 0.2	// distance between frontiers (selection)
@@ -298,14 +300,14 @@ bool ExplorationPlanner::clusterFrontiers()
     
         for(int i = 0; i < frontiers.size(); i++)
         {
-            ROS_DEBUG("Frontier at: %d   and cluster size: %u",i, clusters.size());
+            ROS_DEBUG("Frontier at: %d   and cluster size: %zu",i, clusters.size());
             cluster_found_flag = false;
             bool frontier_used = false;
             same_id = false;
             
             for(int j = 0; j < clusters.size(); j++)
             {
-                ROS_DEBUG("cluster %d contains %u elements", j, clusters.at(j).cluster_element.size());
+                ROS_DEBUG("cluster %d contains %zu elements", j, clusters.at(j).cluster_element.size());
                 for(int n = 0; n < clusters.at(j).cluster_element.size(); n++)
                 {
                    ROS_DEBUG("accessing cluster %d  and element: %d", j, n);
@@ -1597,7 +1599,7 @@ void ExplorationPlanner::negotiationCallback(const adhoc_communication::ExpFront
             }
             if(entry_found == false)
             {
-                ROS_DEBUG("Negotiation frontier with ID: %lld", frontier_element.id);
+                ROS_DEBUG("Negotiation frontier with ID: %" PRId64 "", frontier_element.id);
                 frontier_t negotiation_frontier;
                 negotiation_frontier.detected_by_robot = frontier_element.detected_by_robot;
                 negotiation_frontier.id = frontier_element.id;
@@ -1871,7 +1873,7 @@ void ExplorationPlanner::positionCallback(const adhoc_communication::MmListOfPoi
     position_mutex.lock();
     
     other_robots_positions.positions.clear();
-    ROS_INFO("positions size: %u", msg.get()->positions.size());
+    ROS_INFO("positions size: %zu", msg.get()->positions.size());
     for(int i = 0; i < msg.get()->positions.size(); i++)
     {    
         other_robots_positions.positions.push_back(msg.get()->positions.at(i));
@@ -2358,11 +2360,11 @@ void ExplorationPlanner::frontierCallback(const adhoc_communication::ExpFrontier
             
             if(robot_prefix_empty_param == true)
             {
-                ROS_DEBUG("Received New Frontier with ID: %lld  Robot: %s", frontier_element.id, frontier_element.detected_by_robot_str.c_str());
+                ROS_DEBUG("Received New Frontier with ID: %" PRId64 "  Robot: %s", frontier_element.id, frontier_element.detected_by_robot_str.c_str());
                 storeFrontier(frontier_element.x_coordinate, frontier_element.y_coordinate, frontier_element.detected_by_robot, frontier_element.detected_by_robot_str, frontier_element.id);
             }else
             {
-                ROS_DEBUG("Received New Frontier of Robot %lld with ID %lld", frontier_element.detected_by_robot, frontier_element.id);
+                ROS_DEBUG("Received New Frontier of Robot %" PRId64 " with ID %" PRId64 "", frontier_element.detected_by_robot, frontier_element.id);
                 if(frontier_element.detected_by_robot != robot_name)
                 {
                     storeFrontier(frontier_element.x_coordinate, frontier_element.y_coordinate, frontier_element.detected_by_robot, "", frontier_element.id); 
@@ -2400,10 +2402,10 @@ void ExplorationPlanner::visited_frontierCallback(const adhoc_communication::Exp
         }
         if (result == true)
         {
-            ROS_DEBUG("Received New Visited Frontier of Robot %lld with ID %lld", frontier_element.detected_by_robot, frontier_element.id);
+            ROS_DEBUG("Received New Visited Frontier of Robot %" PRId64 " with ID %" PRId64 "", frontier_element.detected_by_robot, frontier_element.id);
             if(robot_prefix_empty_param == true)
             {
-                ROS_DEBUG("Storing Visited Frontier ID: %lld  Robot: %s", frontier_element.id, frontier_element.detected_by_robot_str.c_str());
+                ROS_DEBUG("Storing Visited Frontier ID: %" PRId64 "  Robot: %s", frontier_element.id, frontier_element.detected_by_robot_str.c_str());
                 storeVisitedFrontier(frontier_element.x_coordinate, frontier_element.y_coordinate, frontier_element.detected_by_robot, frontier_element.detected_by_robot_str, frontier_element.id);
             }else
             {
@@ -2946,7 +2948,7 @@ void ExplorationPlanner::findFrontiers() {
 			allFrontiers.push_back(new_frontier_point);
 		}
 	}
-        ROS_INFO("Found %u frontier cells which are transformed into frontiers points. Starting transformation...", allFrontiers.size());
+        ROS_INFO("Found %zu frontier cells which are transformed into frontiers points. Starting transformation...", allFrontiers.size());
 
 	/*
 	 * Iterate over all frontiers. The frontiers stored in allFrontiers are
@@ -3041,7 +3043,7 @@ void ExplorationPlanner::findFrontiers() {
 		}
 	}
 
-	ROS_INFO("Size of all frontiers in the list: %u", frontiers.size());
+	ROS_INFO("Size of all frontiers in the list: %zu", frontiers.size());
 }
 
 
@@ -3377,7 +3379,7 @@ bool ExplorationPlanner::selectClusterBasedOnAuction(std::vector<double> *goal, 
      * Calculate my own auction BIDs to all my clusters
      * and store them in the auction vector
      */
-    ROS_INFO("Cluster Size: %u", clusters.size());
+    ROS_INFO("Cluster Size: %zu", clusters.size());
     for(int i = 0; i < clusters.size(); i++)
     {        
         ROS_INFO("Calculate cluster with ID: %d", clusters.at(i).id);
@@ -3490,10 +3492,10 @@ bool ExplorationPlanner::selectClusterBasedOnAuction(std::vector<double> *goal, 
     for(int i = 0; i < row; i++)
     {
         ROS_INFO("                 ");
-        ROS_INFO("****** i: %d   auction size: %u ******", i, auction.size());
+        ROS_INFO("****** i: %d   auction size: %zu ******", i, auction.size());
         for(int j = 0; j < col; j++)
         {     
-            ROS_INFO("j: %d   cluster size: %u", j, clusters.size());
+            ROS_INFO("j: %d   cluster size: %zu", j, clusters.size());
             bool found_a_bid = false;
             bool cluster_valid_flag = false; 
             
@@ -3563,7 +3565,7 @@ bool ExplorationPlanner::selectClusterBasedOnAuction(std::vector<double> *goal, 
                 other_robots_position_x = -1;
                 other_robots_position_y = -1;
                 
-                ROS_INFO("---- clusters: %u element size: %u  robots positions: %u ----", clusters.size(), clusters.at(j).cluster_element.size(), other_robots_positions.positions.size());
+                ROS_INFO("---- clusters: %zu element size: %zu  robots positions: %zu ----", clusters.size(), clusters.at(j).cluster_element.size(), other_robots_positions.positions.size());
                 for(int d = 0; d < clusters.at(j).cluster_element.size(); d++)
                 {
                     ROS_INFO("Access clusters.at(%d).cluster_element.at(%d)", j, d);
@@ -3831,7 +3833,7 @@ bool ExplorationPlanner::selectClusterBasedOnAuction(std::vector<double> *goal, 
     {
         
 	Matrix<double> mat = convert_boost_matrix_to_munkres_matrix<double>(m);
-        ROS_INFO("Matrix (%ux%u):",mat.rows(),mat.columns());
+        ROS_INFO("Matrix (%u %u):",mat.rows(),mat.columns());
            
 	// Display begin matrix state.
 	for ( int new_row = 0 ; new_row < mat.rows(); new_row++ ) {
@@ -4598,7 +4600,7 @@ void ExplorationPlanner::sort(int strategy)
                 {
                     if (clusters.at(cluster_number).cluster_element.size() > 0) 
                     {
-                        ROS_DEBUG("Cluster %d  size: %u",cluster_number, clusters.at(cluster_number).cluster_element.size());
+                        ROS_DEBUG("Cluster %d  size: %zu",cluster_number, clusters.at(cluster_number).cluster_element.size());
                             for (int i = clusters.at(cluster_number).cluster_element.size(); i > 0; i--) 
                             {
                                 ROS_DEBUG("Cluster element size: %d", i);
