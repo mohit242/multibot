@@ -1,5 +1,13 @@
-aau_ros
-=======
+multibot  
+========
+
+* ROS Based multi robot environment for testing autonomous navigation algorithms
+
+
+This is a fork of aau-ros/aau_multi_robot project.
+
+Original readme of aau_ros
+============================
 
 This includes the autonomous multi-robot system developed at the <a
 href="http://nes.aau.at">Institute of Networked and Embedded Systems</a> at <a
