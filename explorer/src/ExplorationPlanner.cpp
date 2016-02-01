@@ -50,7 +50,7 @@ template <typename T>
      return ss.str();
   }
 
-ExplorationPlanner::ExplorationPlanner(int robot_id, bool robot_prefix_empty, std::string robot_name_parameter):
+ExplorationPlanner::ExplorationPlanner(int robot_id, bool robot_prefix_empty, std::string robot_name_parameter, std::string mc_group):
 		costmap_ros_(0), occupancy_grid_array_(0), exploration_trans_array_(0), obstacle_trans_array_(
 				0), frontier_map_array_(0), is_goal_array_(0), map_width_(0), map_height_(
 				0), num_map_cells_(0), initialized_(false), last_mode_(
@@ -69,7 +69,7 @@ ExplorationPlanner::ExplorationPlanner(int robot_id, bool robot_prefix_empty, st
     
     trajectory_strategy = "euclidean";
     robot_prefix_empty_param = robot_prefix_empty;
-
+	this->mc_group = mc_group;
             
     responded_t init_responded;
     init_responded.auction_number = 0;
@@ -1494,8 +1494,10 @@ bool ExplorationPlanner::sendToMulticast(std::string multi_cast_group, adhoc_com
         robo_name = robot_str;
 //        robo_name = lookupRobotName(robot_name);
     }
-    std::string destination_name = multi_cast_group + robo_name; //for multicast
-//    std::string destination_name = robo_name; // unicast
+    
+	std::string destination_name = mc_group; //for multicast
+//	std::string destination_name = multi_cast_group + robo_name; //for multicast
+//  std::string destination_name = robo_name; // unicast
     
     ROS_INFO("sending to multicast group '%s' on topic: '%s'",destination_name.c_str(), topic.c_str());
     service_frontier.request.dst_robot = destination_name; 
@@ -1540,7 +1542,8 @@ bool ExplorationPlanner::sendToMulticastAuction(std::string multi_cast_group, ad
         robo_name = robot_str;
     }
     
-    std::string destination_name = multi_cast_group + robo_name; //for multicast
+    std::string destination_name = mc_group; //for unified multicast
+//    std::string destination_name = multi_cast_group + robo_name; //for multicast
 //    std::string destination_name = robo_name; // unicast
     
     ROS_INFO("sending auction to multicast group '%s' on topic '%s'",destination_name.c_str(), topic.c_str());

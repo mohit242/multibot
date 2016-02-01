@@ -53,9 +53,13 @@ MapMerger::MapMerger()
         hostname_c[1023] = '\0';
         int status = gethostname(hostname_c, 1023);
         if(status == -1)
+        {
             ROS_ERROR("Cannot determine hostname. ERROR: %s", strerror(errno));
+		}
         else
+        {
             robot_name = std::string(hostname_c);
+		}
     }
     nodeHandle->param<bool>("splitted",splitted,true);;
     nodeHandle->param<bool>("debug",debug,true);
@@ -72,6 +76,7 @@ MapMerger::MapMerger()
     nodeHandle->param<double>("max_trans_robots",max_trans_robot,-1);
     nodeHandle->param<double>("max_rotation_robots",max_rotation_robot,5);
 
+	nodeHandle->param<std::string>("static_mc_group_name", mc_group, "mc_default");
     nodeHandle->param<std::string>("local_map_topic",local_map_topic,"/map");
     nodeHandle->param<std::string>("local_map_metadata_topic",local_map_metadata_topic,"/map_metadata");
     nodeHandle->param<std::string>("local_map_frame_id",local_map_frame_id,"map");
@@ -82,6 +87,7 @@ MapMerger::MapMerger()
     nodeHandle->param<std::string>("control_topic",control_topic,"control");
     nodeHandle->param<std::string>("robot_prefix",robot_prefix,"");
     nodeHandle->param<std::string>("log_path",log_path,"");
+    ROS_INFO("Using %s as multicast group", mc_group.c_str());
 
     time_start = ros::Time::now();
    /* if(has_local_map == false)
@@ -132,8 +138,8 @@ MapMerger::MapMerger()
     ROS_INFO("Prefix:%s",robot_prefix.c_str());
     ROS_INFO("Local Map Frame:%s",local_map_frame_id.c_str());
     robot_hostname = robot_name;
-
 }
+
 void MapMerger::waitForLocalMetaData()
 {
     //ros::NodeHandle nodeHandle;
@@ -219,16 +225,20 @@ void MapMerger::callback_new_robot(const std_msgs::StringConstPtr &msg)
 {
     std::string newRobotName = msg.get()->data;
 
-    for(int i = 0; i < robots->size(); i++)
+    for (int i = 0; i < robots->size(); i++)
     {
-        if(robots->at(i) == newRobotName)
+        if (robots->at(i) == newRobotName)
         {
             ROS_DEBUG("Already have that robot,sending last update to him");
             int h = update_list->size() -1;
-            if(h < 0)
+            if (h < 0)
+            {
                 h = 0;
+			}
             if(update_list->size() <= h)
+            {
                 return;
+			}
             UpdateEntry* lastUpdate = update_list->at(h);
 
             std::vector<int>* lUpdate = new std::vector<int>();
@@ -537,25 +547,25 @@ void MapMerger::callback_recompute_transform(const ros::TimerEvent &e)
 
 void MapMerger::callback_send_map(const ros::TimerEvent &e)
 {
-    if(local_map_new_data == false)
+    if (local_map_new_data == false)
     {
-        ROS_DEBUG("Do not send map,no new local map data");
+        ROS_DEBUG("Do not send map, no new local map data");
         return;
     }
 
-    if(robots->size() == 0)
+    if (robots->size() == 0)
     {
         ROS_WARN("Do not send map, no robots");
         return;
     }
 
-    if(local_map->data.size() == 0 || local_map_old->data.size() == 0)
+    if (local_map->data.size() == 0 || local_map_old->data.size() == 0)
     {
         ROS_WARN("Do not send map, local map contains no data");
          return;
     }
     local_map_new_data = false;
-    if(debug)
+    if (debug)
     {
         cv::imwrite("local.pgm",mapToMat(local_map));
         cv::imwrite("old.pgm",mapToMat(local_map_old));
@@ -570,25 +580,33 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
     ROS_DEBUG("Check if map changed");
     //+=2 because nearly no differnce to +=1 but lowers number
     //of iterations per 75%
-    for(int row = 0; row < local_map->info.height;row+=2)
+    for (int row = 0; row < local_map->info.height; row+=2)
     {
-        for(int collum = 0; collum < local_map->info.width;collum+=2)
+        for (int collumn = 0; collumn < local_map->info.width; collumn+=2)
         {
-            index = row*local_map->info.width + collum;
-            if(local_map->data[index]!= local_map_old->data[index])
+            index = row * local_map->info.width + collumn;
+            if (local_map->data[index] != local_map_old->data[index])
             {
-                if(min_x > row)
+                if (min_x > row)
+                {
                     min_x = row;
-                if(min_y > collum)
-                    min_y = collum;
-                if(max_x < row)
+                }
+                if (min_y > collumn)
+                {
+                    min_y = collumn;
+				}
+                if( max_x < row)
+                {
                     max_x = row;
-                if(max_y < collum)
-                    max_y = collum;
+                }
+                if (max_y < collumn)
+                {
+                    max_y = collumn;
+				}
             }
         }
     }
-    if(min_x == 9999 || min_y == 9999 || max_x == -1 || max_y == -1)
+    if (min_x == 9999 || min_y == 9999 || max_x == -1 || max_y == -1)
     {
         ROS_DEBUG("map did not changed,skip sending");
         return;
@@ -599,9 +617,11 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
     max_x = map_width;
     max_y = map_height;
 #endif
-    if(max_x < min_x || max_y < min_y)
+    if (max_x < min_x || max_y < min_y)
+    {
         return;
-    ROS_DEBUG("Found values\n min_x:%i|max_x:%i|min_y:%i|max_y:%i",min_x,max_x,min_y,max_y);
+	}
+    ROS_DEBUG("Found values\n min_x:%i|max_x:%i|min_y:%i|max_y:%i", min_x, max_x, min_y, max_y);
     ROS_DEBUG("Merge Local Map");
     mergeMaps(local_map);
     //because that is optimized for a map_part, not for other start values
@@ -612,14 +632,14 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
    /* for(int i = 0; i < robots->size(); i++)
         sendMapOverNetwork(robots->at(i),containedUpdates,min_x,min_y,max_x,max_y);
 */
-    sendMapOverNetwork("mc_" + robot_name,containedUpdates,min_x,min_y,max_x,max_y);
+    sendMapOverNetwork(mc_group, containedUpdates, min_x, min_y, max_x, max_y);
     delete containedUpdates;
     //sendMapOverNetwork("",min_x,min_y,max_x,max_y);
     //send_map_over_network("");
     ROS_DEBUG("Sended local map over network,adding updateentry for update number:%i\n\t\t\tminx:%i\tmaxx:%i\tminy:%i\tmaxy:%i",local_map->header.seq,min_x,max_x,min_y,max_y);
-    update_list->push_back(new UpdateEntry(update_seq,min_x,min_y,max_x,max_y));
+    update_list->push_back(new UpdateEntry(update_seq, min_x, min_y, max_x, max_y));
     update_seq++;
-    if(local_map->data.size() != local_map_old->data.size())
+    if (local_map->data.size() != local_map_old->data.size())
     {
         ROS_FATAL("Local map changed size, not implemented yet");
         //need to delete all and to remerge the maps
@@ -634,7 +654,7 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
         robots_in_transform->clear();
         nav_msgs::OccupancyGrid * whole_map;
         ROS_INFO("Start recalcing the transformations");
-        for(int i = 0; i < robots->size(); i++)
+        for (int i = 0; i < robots->size(); i++)
         {
             ROS_INFO("Merge %i in map_data",i);
             computeTransform(i);
@@ -668,7 +688,7 @@ void MapMerger::callback_got_position_network(const adhoc_communication::MmRobot
         std::string name = robots->at(i);
         //ROS_ERROR("got robot name %s",name.c_str());
         if(name == source_host)
-       {
+        {
             //ROS_ERROR("enter if for %s",name.c_str());
             bool addNew = true;
             //ROS_ERROR("start for");//here is the problem, todo
@@ -816,7 +836,6 @@ void MapMerger::callback_got_position_network(const adhoc_communication::MmRobot
             }
             */
         }
-
     }
     //_position_other_robots.push_back(tmp);
    /* ros::Publisher pub_robot = nodeHandle->advertise<geometry_msgs::PoseStamped>(robot_prefix+"/position/"+source_host,3);
@@ -1042,19 +1061,25 @@ void MapMerger::processPosition(geometry_msgs::PoseStamped * pose)
             (robot_prefix + "/adhoc_communication/send_position");
     adhoc_communication::SendMmRobotPosition exchange;
     exchange.request.topic = position_other_robots_topic;
-    exchange.request.dst_robot = "mc_"+robot_name;
+    exchange.request.dst_robot = mc_group;
     exchange.request.position.position.pose = pose->pose;
     exchange.request.position.src_robot = robot_name;
     //exchange. = robot_name;
     if(client.call(exchange))
-        {
-            if(exchange.response.status)
-                ROS_DEBUG("Could  send position");
-            else
-                ROS_WARN("Problem sending position");
-        }
-        else
-            ROS_DEBUG("Could not call service to send position");
+	{
+		if(exchange.response.status)
+		{
+			ROS_DEBUG("Could  send position");
+		}
+		else
+		{
+			ROS_WARN("Problem sending position");
+		}
+	}
+	else
+	{
+		ROS_DEBUG("Could not call service to send position");
+	}
 }
 
 void MapMerger::start()
@@ -1063,7 +1088,6 @@ void MapMerger::start()
     ROS_INFO("Started MapMerger");
     ROS_INFO("Subscribe map topic [%s]",local_map_topic.c_str());
 
-
     ros::Subscriber  sub = nodeHandle->subscribe(local_map_topic,1000,&MapMerger::callback_map,this);
     ros::Duration(0.1).sleep();
     ros::spinOnce();
@@ -1071,8 +1095,6 @@ void MapMerger::start()
     ros::Subscriber  sub_control = nodeHandle->subscribe(robot_prefix+"/"+control_topic,1000,&MapMerger::callback_control,this);
     ros::Duration(0.1).sleep();
     ros::spinOnce();
-
-
 
     ROS_INFO("Init Sub_other_maps");
     ros::Subscriber  sub_other_maps = nodeHandle->subscribe(robot_prefix+"/"+topic_over_network,1000,&MapMerger::callback_map_other,this);
@@ -1523,85 +1545,95 @@ void MapMerger::callback_robot_status(const nav_msgs::MapMetaData::ConstPtr &msg
     }
 }
 
-void MapMerger::sendMapOverNetwork(string destination, std::vector<int>* containedUpdates, int start_row, int start_collum, int end_row, int end_collum)
+void MapMerger::sendMapOverNetwork(string destination, std::vector<int>* containedUpdates, int start_row, int start_collumn, int end_row, int end_collumn)
 {
-     //ros::nodeHandle nodeHandle ("~");
-     if (broadcast_map == true)
-     {
-         destination = "";
-     }
-     ros::ServiceClient client;
-     bool isWholeMap = false;
-     client = nodeHandle->serviceClient<adhoc_communication::SendMmMapUpdate>
+    //ros::nodeHandle nodeHandle ("~");
+    if (broadcast_map == true)
+    {
+        destination = "";
+    }
+    ros::ServiceClient client;
+    bool isWholeMap = false;
+    client = nodeHandle->serviceClient<adhoc_communication::SendMmMapUpdate>
              (robot_prefix + "/adhoc_communication/send_map_update");
-      std::string service = robot_prefix + "/adhoc_communication/send_map_update";
-     if(end_row == -1 || end_collum == -1)
+    std::string service = robot_prefix + "/adhoc_communication/send_map_update";
+    if (end_row == -1 || end_collumn == -1)
     {
         ROS_DEBUG("Send whole map");
         end_row = map_height;
-        end_collum = map_width;
+        end_collumn = map_width;
         start_row = 0;
-        start_collum = 0;
+        start_collumn = 0;
         isWholeMap = true;
     }
-        ROS_DEBUG("Send map using:%s \n\t\t\t\t the normal way min_x:%i|max_x:%i|min_y:%i|max_y:%i",service.c_str(),start_row,end_row,start_collum,end_collum);
-        /**
-          todo:
-          values for the mapPart are used wrong, always creates one great map part if i just send 688 x 688 packets,
-          fix the problem
-        */
-        int height,width;
-        height = size;
-        width = size;
-        for(int row = start_row; row < end_row;row+=size)
-        {
-            for(int collum = start_collum; collum < end_collum;collum+=size)
-            {
-                if(row + height > end_row)
-                    height = end_row - row;
-                if(collum + width > end_collum)
-                    width = end_collum - collum;
-                ROS_DEBUG("Creating map part t");
-                nav_msgs::OccupancyGrid * t = this->getMapPart(-1,row,collum,width,height);
-                ROS_DEBUG("Checking data of  map part t,size:%zu",t->data.size());
+	ROS_DEBUG("Send map using:%s \n\t\t\t\t the normal way min_x:%i|max_x:%i|min_y:%i|max_y:%i",service.c_str(),start_row,end_row,start_collumn,end_collumn);
+	/**
+	  todo:
+	  values for the mapPart are used wrong, always creates one great map part if i just send 688 x 688 packets,
+	  fix the problem
+	*/
+	int height,width;
+	height = size;
+	width = size;
+	for(int row = start_row; row < end_row; row+=size)
+	{
+		for(int collumn = start_collumn; collumn < end_collumn; collumn+=size)
+		{
+			if(row + height > end_row)
+				height = end_row - row;
+			if(collumn + width > end_collumn)
+				width = end_collumn - collumn;
+			ROS_DEBUG("Creating map part t");
+			nav_msgs::OccupancyGrid * t = this->getMapPart(-1,row,collumn,width,height);
+			ROS_DEBUG("Checking data of  map part t,size:%zu",t->data.size());
 
-                /*int sum_elements = std::accumulate(t->data.begin(),t->data.end(),0);
-                if(sum_elements == (-1)* t->data.size())
-                {
-                    ROS_DEBUG("Map is empty, do not send");
-                    delete t;
-                    continue;
-                }
-                ROS_WARN("INFO send map, sum_elements is:%i",sum_elements);
-                */
-                adhoc_communication::SendMmMapUpdate exchange;
-                exchange.request.topic =topic_over_network;
-                exchange.request.map_update.src_robot = robot_hostname;
-                exchange.request.map_update.map.info = t->info;
-                exchange.request.map_update.map.header = t->header;
-                exchange.request.map_update.map.header.seq = update_seq;
-                exchange.request.map_update.map.header.frame_id = robot_name.c_str();
-                exchange.request.map_update.map.data = t->data;
-                exchange.request.map_update.update_numbers = *containedUpdates;
-                std::string hostname = destination;
-                exchange.request.dst_robot = destination;
-                ROS_DEBUG("Send Map to %s(if nothing -> boradcast) ,frame id:%s| topic:[%s]|data<_size:%zu",
-                          destination.c_str(),t->header.frame_id.c_str(),
-                          topic_over_network.c_str(), exchange.request.map_update.map.data.size());
-                if(client.call(exchange))
-                {
-                    if(exchange.response.status)
-                        if(destination == "")
-                            ROS_DEBUG("Sended Map to:all,topic:%s|r:%i;c:%i",exchange.request.topic.c_str(),row,collum);
-                    else
-                        ROS_DEBUG("Sended Map to:%s,topic:%s|r:%i;c:%i",exchange.request.dst_robot.c_str(),exchange.request.topic.c_str(),row,collum);
-                    else
-                        ROS_WARN("Destination host unreachable [%s](if nothing -> boradcast)",hostname.c_str());
-                }
-                else
-                    ROS_DEBUG("Could not call service to send map");
-            }
-        }
+			/*int sum_elements = std::accumulate(t->data.begin(),t->data.end(),0);
+			if(sum_elements == (-1)* t->data.size())
+			{
+				ROS_DEBUG("Map is empty, do not send");
+				delete t;
+				continue;
+			}
+			ROS_WARN("INFO send map, sum_elements is:%i",sum_elements);
+			*/
+			adhoc_communication::SendMmMapUpdate exchange;
+			exchange.request.topic =topic_over_network;
+			exchange.request.map_update.src_robot = robot_hostname;
+			exchange.request.map_update.map.info = t->info;
+			exchange.request.map_update.map.header = t->header;
+			exchange.request.map_update.map.header.seq = update_seq;
+			exchange.request.map_update.map.header.frame_id = robot_name.c_str();
+			exchange.request.map_update.map.data = t->data;
+			exchange.request.map_update.update_numbers = *containedUpdates;
+			std::string hostname = destination;
+			exchange.request.dst_robot = destination;
+			ROS_DEBUG("Send Map to %s(if nothing -> broadcast), frame id:%s| topic:[%s]|data<_size:%zu",
+					  destination.c_str(),t->header.frame_id.c_str(),
+					  topic_over_network.c_str(), exchange.request.map_update.map.data.size());
+			if (client.call(exchange))
+			{
+				if (exchange.response.status)
+				{
+					if (destination == "")
+					{
+						ROS_DEBUG("Sended Map to: all,topic:%s|r:%i;c:%i",exchange.request.topic.c_str(), row, collumn);
+					}
+					else
+					{
+						ROS_DEBUG("Sended Map to: %s,topic:%s|r:%i;c:%i",exchange.request.dst_robot.c_str(), exchange.request.topic.c_str(), row, collumn);
+					}
+				}
+				else
+				{
+					ROS_WARN("Destination host unreachable [%s](if nothing -> broadcast)",hostname.c_str());
+				}
+			}
+			else
+			{
+				ROS_DEBUG("Could not call service to send map");
+			}
+		}
+	}
 }
 
 void MapMerger::sendMetaData(float res)

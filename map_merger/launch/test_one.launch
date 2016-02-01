@@ -8,7 +8,7 @@
 	Start simulation.
 	As far as we have only one robot in Stage, we simply start simulator and use top-topics.
 !-->
-<node required="true" pkg="stage_ros" type="stageros" name="simulation" args="$(find stage_ros)/world/willow-erratic.world" />
+<node required="true" pkg="stage_ros" type="stageros" name="simulation" args="$(find map_merger)/world/test_one.world" />
 <!--
 	Setup network out of one node (our the only robot)
 !-->

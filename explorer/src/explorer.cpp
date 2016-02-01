@@ -49,110 +49,109 @@ public:
 	Explorer(tf::TransformListener& tf) :
         counter(0), rotation_counter(0), nh("~"), exploration_finished(false), number_of_robots(1), accessing_cluster(0), cluster_element_size(0),
         cluster_flag(false), cluster_element(-1), cluster_initialize_flag(false), global_iterattions(0), global_iterations_counter(0), 
-        counter_waiting_for_clusters(0), global_costmap_iteration(0), robot_prefix_empty(false), robot_id(0){
-
-        
-                nh.param("frontier_selection",frontier_selection,1); 
-                nh.param("local_costmap/width",costmap_width,0); 
-                nh.param<double>("local_costmap/resolution",costmap_resolution,0);
-                nh.param("number_unreachable_for_cluster", number_unreachable_frontiers_for_cluster,3);
-                
-                ROS_INFO("Costmap width: %d", costmap_width);
+        counter_waiting_for_clusters(0), global_costmap_iteration(0), robot_prefix_empty(false), robot_id(0)
+        {
+			nh.param("frontier_selection",frontier_selection,1); 
+			nh.param("local_costmap/width",costmap_width,0); 
+			nh.param<double>("local_costmap/resolution",costmap_resolution,0);
+			nh.param("number_unreachable_for_cluster", number_unreachable_frontiers_for_cluster,3);
+			nh.param<std::string>("mc_group",mc_group,"mc_default");
+			
+			ROS_INFO("Costmap width: %d", costmap_width);
 //                frontier_selection = atoi(param.c_str());
-                ROS_INFO("Frontier selection is set to: %d", frontier_selection);
-                //frontier_selection = 3;
-                Simulation = false;      
+			ROS_INFO("Frontier selection is set to: %d", frontier_selection);
+			//frontier_selection = 3;
+			Simulation = false;      
                 
 //#ifdef PROFILE
 //const char  fname[3] = "TS";
 //ProfilerStart(fname);
 //HeapProfilerStart(fname);
 //#endif
-
-                srand((unsigned)time(0));
-                
+			srand((unsigned)time(0));
 //		sound_play::SoundClient sc;
 //              sleepok(0.5, nh);
 //		sc.say("Hello    World   I    am    Turtlebot");
-		
-                nh.param<std::string>("move_base_frame",move_base_frame,"map");  
-                nh.param<int>("wait_for_planner_result",waitForResult,3);
-                // determine host name
-                nh.param<std::string>("robot_prefix",robot_prefix,"");
-                ROS_INFO("robot prefix: \"%s\"", robot_prefix.c_str());
+	
+			nh.param<std::string>("move_base_frame",move_base_frame,"map");  
+			nh.param<int>("wait_for_planner_result",waitForResult,3);
+			// determine host name
+			nh.param<std::string>("robot_prefix",robot_prefix,"");
+			ROS_INFO("robot prefix: \"%s\"", robot_prefix.c_str());
 
-                //char hostname_c[1024];
-                //hostname_c[1023] = '\0';
-                //gethostname(hostname_c, 1023);
-                //robot_name = std::string(hostname_c);
-               
-                // create map_merger service
-                std::string service = robot_prefix + std::string("/map_merger/logOutput");
-                mm_log_client = nh.serviceClient<map_merger::LogMaps>(service.c_str());
-                
-                if(robot_prefix.empty())
-                {
-                    /*char hostname_c[1024];
-                    hostname_c[1023] = '\0';
-                    gethostname(hostname_c, 1023);
-                    robot_name = std::string(hostname_c);*/
-			nh.param<std::string>("robot_name",robot_name,"unknown_robot");
-                    ROS_INFO("NO SIMULATION! Robot name: %s", robot_name.c_str());
-                                        
-                    /*
-                     * THIS IS REQUIRED TO PERFORM COORDINATED EXPLORATION
-                     * Assign numbers to robot host names in order to make
-                     * auctioning and frontier selection UNIQUE !!!!!
-                     * To use explorer node on a real robot system, add your robot names 
-                     * here and at ExplorationPlanner::lookupRobotName function ... 
-                     */
-                    std::string bob = "bob";
-                    std::string marley = "marley";
-                    std::string turtlebot = "turtlebot";
-                    std::string joy = "joy";
-                    std::string hans = "hans";
-                    
-                    if(robot_name.compare(turtlebot) == 0)
-                        robot_id = 0;
-                    if(robot_name.compare(joy) == 0)
-                        robot_id = 1;
-                    if(robot_name.compare(marley) == 0)
-                        robot_id = 2;
-                    if(robot_name.compare(bob) == 0)
-                        robot_id = 3;
-                    if(robot_name.compare(hans) == 0)
-                        robot_id = 4;
-               
-                    robot_prefix_empty = true;
-                    ROS_INFO("Robot name: %s    robot_id: %d", robot_name.c_str(), robot_id);
-                }else
-                {
-                    robot_name = robot_prefix;
-                    ROS_INFO("Move_base_frame: %s",move_base_frame.c_str());               
-                    robot_id = atoi(move_base_frame.substr(7,1).c_str());
+			//char hostname_c[1024];
+			//hostname_c[1023] = '\0';
+			//gethostname(hostname_c, 1023);
+			//robot_name = std::string(hostname_c);
+		   
+			// create map_merger service
+			std::string service = robot_prefix + std::string("/map_merger/logOutput");
+			mm_log_client = nh.serviceClient<map_merger::LogMaps>(service.c_str());
+			
+			if(robot_prefix.empty())
+			{
+				/*char hostname_c[1024];
+				hostname_c[1023] = '\0';
+				gethostname(hostname_c, 1023);
+				robot_name = std::string(hostname_c);*/
+				nh.param<std::string>("robot_name",robot_name,"default");
+				ROS_INFO("NO SIMULATION! Robot name: %s", robot_name.c_str());
+									
+				/*
+				 * THIS IS REQUIRED TO PERFORM COORDINATED EXPLORATION
+				 * Assign numbers to robot host names in order to make
+				 * auctioning and frontier selection UNIQUE !!!!!
+				 * To use explorer node on a real robot system, add your robot names 
+				 * here and at ExplorationPlanner::lookupRobotName function ... 
+				 */
+				std::string bob = "bob";
+				std::string marley = "marley";
+				std::string turtlebot = "turtlebot";
+				std::string joy = "joy";
+				std::string hans = "hans";
+				
+				if(robot_name.compare(turtlebot) == 0)
+					robot_id = 0;
+				if(robot_name.compare(joy) == 0)
+					robot_id = 1;
+				if(robot_name.compare(marley) == 0)
+					robot_id = 2;
+				if(robot_name.compare(bob) == 0)
+					robot_id = 3;
+				if(robot_name.compare(hans) == 0)
+					robot_id = 4;
+		   
+				robot_prefix_empty = true;
+				ROS_INFO("Robot name: %s    robot_id: %d", robot_name.c_str(), robot_id);
+			}
+			else
+			{
+				robot_name = robot_prefix;
+				ROS_INFO("Move_base_frame: %s",move_base_frame.c_str());               
+				robot_id = atoi(move_base_frame.substr(7,1).c_str());
 
-                    ROS_INFO("Robot: %d", robot_id);
-                } 
-                /*
-                 * If you want to operate only 1 robot but stage is operating 2
-                 * then simply kill one of them.
-                 */
+				ROS_INFO("Robot: %d", robot_id);
+			} 
+			/*
+			 * If you want to operate only 1 robot but stage is operating 2
+			 * then simply kill one of them.
+			 */
 //                if(robot_name == 1)
 //                {
 //                    ROS_ERROR("Shutting down ROBOT 1");
 //                    ros::shutdown();
 //                }
-                
-                
-               /*
-                *  CREATE LOG PATH
-                * Following code enables to write the output to a file
-                * which is localized at the log_path
-                */
-                initLogPath();
-                csv_file = log_path + std::string("periodical.log");
-                log_file = log_path + std::string("exploration.log"); 
-                
+			
+		
+	   /*
+		*  CREATE LOG PATH
+		* Following code enables to write the output to a file
+		* which is localized at the log_path
+		*/
+		initLogPath();
+		csv_file = log_path + std::string("periodical.log");
+		log_file = log_path + std::string("exploration.log"); 
+			
 		ROS_DEBUG("*********************************************");
 		ROS_INFO("******* Initializing Simple Navigation ******");
 		ROS_DEBUG("                                             ");
@@ -163,8 +162,8 @@ public:
 		costmap2d_global->pause();
 		ROS_DEBUG("Pausing performed");
 
-                if (OPERATE_ON_GLOBAL_MAP == true)
-                {
+		if (OPERATE_ON_GLOBAL_MAP == true)
+		{
 			costmap2d_local_size = new costmap_2d::Costmap2DROS("local_costmap", tf);
 			costmap2d_local_size->pause();
 			ROS_INFO("Starting Global costmap ...");
@@ -179,8 +178,8 @@ public:
 			//	ROS_DEBUG("local costmap ptr == global costmap ptr");
 		        //}
 		}
-                else
-                {
+		else
+		{
 			ROS_INFO("Creating local costmap ...");
 			costmap2d_local = new costmap_2d::Costmap2DROS("local_costmap", tf);
 			ROS_INFO("Local costmap created ... now performing costmap -> pause");
@@ -195,7 +194,7 @@ public:
 			ROS_INFO("Starting Local costmap ... ");
 			costmap2d_local->start();
 			ROS_INFO("BOTH COSTMAPS STARTED AND RUNNING ...");
-                }
+		}
 		ROS_INFO("---------------- COSTMAP DONE ---------------");
 
 		/*
@@ -206,37 +205,38 @@ public:
 		 * (home position).
 		 */
  
-		if (!costmap2d_local->getRobotPose(robotPose)) {
+		if (!costmap2d_local->getRobotPose(robotPose)) 
+		{
 			ROS_ERROR("Failed to get RobotPose");
 		}
 		visualize_goal_point(robotPose.getOrigin().getX(),
 				robotPose.getOrigin().getY());
 
 		// transmit three times, since rviz need at least 1 to buffer before visualizing the point
-		for (int i = 0; i <= 2; i++) {
+		for (int i = 0; i <= 2; i++) 
+		{
 			visualize_home_point();
 		}
 
-
 		// instantiate the planner
-		exploration = new explorationPlanner::ExplorationPlanner(robot_id, robot_prefix_empty, robot_name);
+		exploration = new explorationPlanner::ExplorationPlanner(robot_id, robot_prefix_empty, robot_name, mc_group);
                 
 		/*
 		 * Define the first Goal. This is required to have at least one entry
 		 * within the vector. Therefore set it to the home position.
 		 */
                                
-                robot_home_position_x = robotPose.getOrigin().getX();
-                robot_home_position_y = robotPose.getOrigin().getY();
+		robot_home_position_x = robotPose.getOrigin().getX();
+		robot_home_position_y = robotPose.getOrigin().getY();
 		ROS_INFO("Set home point to (%lf,%lf).",robot_home_position_x,robot_home_position_y);
-               
-                exploration->next_auction_position_x = robotPose.getOrigin().getX();
-                exploration->next_auction_position_y = robotPose.getOrigin().getY();
-                
-                exploration->storeVisitedFrontier(robot_home_position_x,robot_home_position_y, robot_id, robot_name, -1);		             
-                exploration->storeFrontier(robot_home_position_x,robot_home_position_y, robot_id, robot_name, -1);           
-               
-                exploration->setRobotConfig(robot_id, robot_home_position_x, robot_home_position_y, move_base_frame);
+	   
+		exploration->next_auction_position_x = robotPose.getOrigin().getX();
+		exploration->next_auction_position_y = robotPose.getOrigin().getY();
+		
+		exploration->storeVisitedFrontier(robot_home_position_x,robot_home_position_y, robot_id, robot_name, -1);		             
+		exploration->storeFrontier(robot_home_position_x,robot_home_position_y, robot_id, robot_name, -1);           
+	   
+		exploration->setRobotConfig(robot_id, robot_home_position_x, robot_home_position_y, move_base_frame);
                 
 		ROS_INFO("                                             ");
 		ROS_INFO("************* INITIALIZING DONE *************");
@@ -1624,6 +1624,7 @@ public:
         
         std::string csv_file, log_file;
         std::string log_path;
+        std::string mc_group;
         std::fstream fs_csv, fs;
                 
 private:

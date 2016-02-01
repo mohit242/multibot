@@ -99,7 +99,7 @@ StitchedMap::StitchedMap(Mat &img1, Mat &img2, int max_trans, int max_rotation, 
  // ROS_INFO("Found %i matches",matches.size());
   if(coord1.size() < 1)
   {
-      ROS_WARN("Problem by transforming map,this migth just an start up problem \n Coord1:%zu",coord1.size());
+      ROS_WARN("Problem by transforming map, this may be just a start up problem.\n Coord1:%zu",coord1.size());
       works = false;
       return;
   }

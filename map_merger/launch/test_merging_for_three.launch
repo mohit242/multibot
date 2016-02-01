@@ -43,11 +43,12 @@ for future purpose so that we could change the amount of robots on map
 	<param name="seconds_recompute_transform" value="25" />
 	<param name="seconds_send_position" value="6" />
 	<param name="position_other_robots_topic" value="/robot_1/position_other_robots"/>       
-    	<param name="split_size" value="2048" />
-    	<param name="splitted" value="true" />
-    	<param name="local_map_topic" value="/robot_1/map" />
-    	<param name="meta_topic_over_network" value="/robot_1/map_meta" />
-    	<param name="local_map_metadata_topic" value="/robot_1/map_metadata" />
+	<param name="split_size" value="2048" />
+	<param name="splitted" value="true" />
+	<param name="local_map_topic" value="/robot_1/map" />
+	<param name="meta_topic_over_network" value="/robot_1/map_meta" />
+	<param name="local_map_metadata_topic" value="/robot_1/map_metadata" />
+	<param name="static_mc_group_name" value="default"/>
 	<remap from="/map_other" to="/robot_1/map_other"/>
 	<remap from="/control" to="/robot_1/control"/>
 	<remap from="/adhoc_communication/new_robot" to="/robot_1/adhoc_communication/new_robot"/>
@@ -102,11 +103,12 @@ base_frame: /robot_1/base_link
 	<param name="seconds_recompute_transform" value="25" />
 	<param name="seconds_send_position" value="6" />
 	<param name="position_other_robots_topic" value="/robot_2/position_other_robots"/>       
-    	<param name="split_size" value="2048" />
-    	<param name="splitted" value="true" />
-    	<param name="local_map_topic" value="/robot_2/map" />
-    	<param name="meta_topic_over_network" value="/robot_2/map_meta" />
-    	<param name="local_map_metadata_topic" value="/robot_2/map_metadata" />
+	<param name="split_size" value="2048" />
+	<param name="splitted" value="true" />
+	<param name="local_map_topic" value="/robot_2/map" />
+	<param name="meta_topic_over_network" value="/robot_2/map_meta" />
+	<param name="local_map_metadata_topic" value="/robot_2/map_metadata" />
+	<param name="static_mc_group_name" value="default"/>
 	<remap from="/map_other" to="/robot_2/map_other"/>
 	<remap from="/control" to="/robot_2/control"/>
 	<remap from="/adhoc_communication/new_robot" to="/robot_2/adhoc_communication/new_robot"/>
@@ -161,11 +163,12 @@ base_frame: /robot_2/base_link
 	<param name="seconds_recompute_transform" value="25" />
 	<param name="seconds_send_position" value="6" />
 	<param name="position_other_robots_topic" value="/robot_3/position_other_robots"/>       
-    	<param name="split_size" value="2048" />
-    	<param name="splitted" value="true" />
-    	<param name="local_map_topic" value="/robot_3/map" />
-    	<param name="meta_topic_over_network" value="/robot_3/map_meta" />
-    	<param name="local_map_metadata_topic" value="/robot_3/map_metadata" />
+	<param name="split_size" value="2048" />
+	<param name="splitted" value="true" />
+	<param name="local_map_topic" value="/robot_3/map" />
+	<param name="meta_topic_over_network" value="/robot_3/map_meta" />
+	<param name="local_map_metadata_topic" value="/robot_3/map_metadata" />
+	<param name="static_mc_group_name" value="default"/>
 	<remap from="/map_other" to="/robot_3/map_other"/>
 	<remap from="/control" to="/robot_3/control"/>
 	<remap from="/adhoc_communication/new_robot" to="/robot_3/adhoc_communication/new_robot"/>

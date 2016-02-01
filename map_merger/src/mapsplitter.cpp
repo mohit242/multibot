@@ -1,6 +1,7 @@
 #include <ros/ros.h>
 #include <nav_msgs/OccupancyGrid.h>
 #include "numeric"
+
 using namespace std;
 
 void callback(const nav_msgs::OccupancyGrid::ConstPtr& msg);
@@ -11,10 +12,10 @@ int main(int argc, char **argv)
     ros::init(argc,argv,"map_splitter");
     string topic;
     ros::NodeHandle n;
-    n.param<string>("/map_splitter/map_topic",topic,"map");
-    ROS_INFO("Subscribed Topic: %s",topic.c_str());
+    n.param<string>("/map_splitter/map_topic", topic, "map");
+    ROS_INFO("Subscribed Topic: %s", topic.c_str());
 
-    ros::Subscriber  sub = n.subscribe(topic,1000,&callback);
+    ros::Subscriber sub = n.subscribe(topic, 1000, &callback);
     ROS_DEBUG("Init Subscriber");
     ROS_INFO("Splitter Waits");
     ros::Duration(6).sleep();
@@ -63,7 +64,7 @@ void callback(const nav_msgs::OccupancyGrid::ConstPtr& msg)
             //ROS_INFO("row:%icollum:%i:",row,collum);
             nav_msgs::OccupancyGrid * t = getMapPart(&local_map,row,collum,size,size);
             int sum_elements = std::accumulate(t->data.begin(),t->data.end(),0);
-            if(sum_elements == (-1)* t->data.size())
+            if (sum_elements == (-1) * t->data.size())
             {
                 ROS_DEBUG("Map is empty, do not publish");
                 continue;

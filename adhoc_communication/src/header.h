@@ -149,7 +149,7 @@ std::string hostname; // hostname of the node
 std::string mac_as_string = "";
 std::string interface_as_string = "";
 uint32_t packet_id_ = -1;
-
+bool unique_mc_group = false;
 
 void socketSend(string network_string);
 
@@ -759,6 +759,7 @@ void initParams(ros::NodeHandle* n)
     n->param("recursive_mc_ack", recursive_mc_ack, false);
     n->param("loss_ratio", loss_ratio, loss_ratio);
     n->param("nack_threshold", Packet::NACK_THRESHOLD, Packet::NACK_THRESHOLD);
+    n->param<bool>("unique_mc_group", unique_mc_group, false);
 
     n->param("sim_robot_macs", sim_robot_macs, std::string("")); // exp: "robot_0,00:11:00:00:00:00!robot_0,00:11:00:00:00:00
     RoutedFrame::enable_cooperative_relaying = enable_cooperative_relaying;

@@ -1195,12 +1195,21 @@ int main(int argc, char **argv)
         }
     }
 
-    /* Create own mc group */
+	
+    if (unique_mc_group == true)
     {
+		/* Create own mc group */
         ROS_INFO("Create own group! %s ", std::string("mc").append("_").append(hostname).c_str());
         boost::unique_lock<boost::mutex> lock(mtx_mc_groups);
         mc_handler.createGroupAsRoot(&std::string("mc").append("_").append(hostname));
     }
+    else
+    {
+		/* create default one */
+        ROS_INFO("Create default group! %s ", std::string("mc").append("_default").c_str());
+        boost::unique_lock<boost::mutex> lock(mtx_mc_groups);
+        mc_handler.createGroupAsRoot(&std::string("mc").append("_default"));
+	}
 
 
 

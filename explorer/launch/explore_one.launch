@@ -12,7 +12,7 @@
 	Start simulation.
 	As far as we have only one robot in Stage, we simply start simulator and use top-topics.
 !-->
-<node respawn="true" pkg="stage_ros" type="stageros" name="simulation" args="$(find explorer)/worlds/exploration_one.world" />
+<node respawn="true" pkg="stage_ros" type="stageros" name="simulation" args="$(find explorer)/world/exploration_one.world" />
 <!--
 	We remap scan topic and 
 	set frames so that it could work
@@ -58,7 +58,7 @@ map_update_interval: 1.0
 </node>
 <node pkg="map_merger" type="map_merger" name="map_merger" output="$(arg output)">
    	<param name="log_path" value="$(arg log_path)" />
-	<param name="robot_name" value="" />
+	<param name="robot_name" value="robot_0" />
 	<param name="robot_prefix" value="" />
 	<param name="local_map_frame_id" value="$(arg robot_local_map_frame)"/>
 	<param name="exchange_position" value="false" />

@@ -151,6 +151,7 @@ private:
                 position_other_robots_topic,
                 robot_prefix,
                 robot_name,
+                mc_group,
                 control_topic,
                 log_path,                   /// log path argument specified by launch file
                 full_log_path,

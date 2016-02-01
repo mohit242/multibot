@@ -189,7 +189,7 @@ namespace explorationPlanner
             std::vector<std::string> new_robots;
             int next_auction_position_x, next_auction_position_y;
             
-            ExplorationPlanner(int robot_id, bool robot_prefix_empty, std::string robot_name_parameter);
+            ExplorationPlanner(int robot_id, bool robot_prefix_empty, std::string robot_name_parameter, std::string mc_group);
             void printFrontiers();
             bool respondToAuction(std::vector<requested_cluster_t> requested_cluster_ids, int auction_id_number);
             bool clusterIdToElementIds(int cluster_id, std::vector<transform_point_t>* occupied_ids);
@@ -306,6 +306,7 @@ namespace explorationPlanner
             int previous_goal_;
 
             std::string name;
+            std::string mc_group;
             unsigned int map_width_;
             unsigned int map_height_;
             unsigned int num_map_cells_;
