@@ -99,7 +99,7 @@ uint32_t Logging::running_multicast_threads = 0;
 uint32_t Logging::running_unicast_transport_threads = 0;
 uint32_t Logging::running_unicast_link_threads = 0;
 
-unicast frames sent 
+unicast frames sent
 uint32_t Logging::num_unique_data_frames_sent = 0;
 uint32_t Logging::num_unique_data_frames_forwarded = 0;
 uint32_t Logging::num_data_frames_resent = 0;
@@ -115,7 +115,7 @@ uint32_t Logging::num_relay_detection_sent = 0;
 uint32_t Logging::num_total_frames_sent = 0;
 
 
-/* unicast received sent 
+// unicast received sent
 uint32_t Logging::num_unique_data_frames_received_directly = 0;
 uint32_t Logging::num_unique_data_frames_received_relay = 0;
 uint32_t Logging::num_data_frames_received_directly = 0;
@@ -133,7 +133,7 @@ uint32_t Logging::num_total_frames_received = 0;
 uint32_t Logging::num_total_bytes_sent = 0;
 uint32_t Logging::num_total_bytes_received = 0;
 
-/* mc frames sent 
+// mc frames sent
 uint32_t Logging::num_mc_unique_data_frames_sent = 0;
 uint32_t Logging::num_mc_unique_data_frames_forwarded = 0;
 uint32_t Logging::num_mc_data_frames_resent = 0;
@@ -148,7 +148,7 @@ uint32_t Logging::num_mc_relay_selection_sent = 0;
 uint32_t Logging::num_mc_total_frames_sent = 0;
 
 
-/* mc frames sent 
+// mc frames sent
 uint32_t Logging::num_mc_unique_data_frames_received_directly = 0;
 uint32_t Logging::num_mc_unique_data_frames_received_relay = 0;
 uint32_t Logging::num_mc_data_frames_received_directly = 0;

@@ -1,6 +1,12 @@
 cmake_minimum_required(VERSION 2.8.3)
 
-set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror" )
+if (NOT "${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+  # ros-jade-navigation contains funtion that, despite its declaration,
+  # doesn't return anything. Clang will warn us about this which, due to
+  # -Werror flag, will ruin compilation.
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror")
+endif()
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 project(map_merger)
 ## Find catkin macros and libraries

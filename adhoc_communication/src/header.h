@@ -795,43 +795,44 @@ bool isReachable(unsigned char mac[6])
         PositionSubscriber other_robot;
         other_robot.robot_name_ = getHostnameFromMac(mac);
 
-        for (std::list<PositionSubscriber*>::iterator it = robot_positions_l.begin(); it != robot_positions_l.end(); ++it)
+        for (auto it = robot_positions_l.begin(); it != robot_positions_l.end(); ++it)
         {
             if (other_robot.robot_name_.compare((*it)->robot_name_) == 0)
             {
                 double d = my_sim_position->calcDistance(*it);
 
-                //ROS_ERROR("d: %f",d);
                 if (d == -1)
                 {
-
                     return false;
                 }
 
                 double p_rx = p_tx - (l_0_model + 10 * n_model * log10(d));
 
-
                 if (p_thres <= p_rx)
                 {
                     //ROS_DEBUG("connected with %s %f %f",other_robot->robot_name_.c_str(),d,p_rx);
                     return true;
-                } else
+                }
+                else
+                {
                     return false;
-
+                }
             }
         }
-
-    } else if (sim_robot_macs.compare("") != 0)
+        return false;
+    }
+    else if (sim_robot_macs.compare("") != 0)
     {
         boost::unique_lock<boost::mutex> lock(mtx_neighbors);
         hostname_mac n(mac);
-
-        std::list<hostname_mac>::iterator searchNeighbor = std::find(neighbors_l.begin(), neighbors_l.end(), n);
+        auto searchNeighbor = std::find(neighbors_l.begin(), neighbors_l.end(), n);
 
         return searchNeighbor != neighbors_l.end();
-
-    } else
+    }
+    else
+    {
         return true;
+    }
 }
 
 bool connectedWith(unsigned char mac[6])
@@ -1166,7 +1167,7 @@ void joinAllMcGroups()
            ROS_ERROR("FATAL: %s", g_name.c_str());
        else if(!mc_t->activated)
             ROS_ERROR("NOT CONNECTED: %s", g_name.c_str());
-      /*
+
        uint8_t joinAttemps = 0;
        while ((t.group_name.compare("") == 0 || !t.member) && joinAttemps++ < 10) {
            req.action = true;

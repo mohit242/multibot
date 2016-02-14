@@ -774,7 +774,7 @@ void MapMerger::callback_got_position_network(const adhoc_communication::MmRobot
                 ROS_DEBUG("find trans");
                 int index_transform = findTransformIndex(i);
                 ROS_DEBUG("finished find trans");
-                if(transforms->size() == 0 );
+                if(transforms->size() == 0 )
                 {
                     ROS_WARN("no transformation for %s, position is not published,index:%u, size:%zu",name.c_str(),index_transform,transforms->size());
                 }
@@ -822,8 +822,8 @@ void MapMerger::callback_got_position_network(const adhoc_communication::MmRobot
                 inPts.push_back(org_point);
                 outPts.push_back(homogeneous);
                 cv::Size s;
-                s.height = map_height; //* 0.05;
-                s.width = map_width ;//* 0.05;
+                s.height = map_height; // 0.05;
+                s.width = map_width ;// 0.05;
                 cv::transform(inPts,outPts,trans);
                 tmp.pose.position.x = (outPts.at(0).x - map_width / 2) * 0.05;
                 tmp.pose.position.y = (outPts.at(0).y - map_height / 2) * 0.05;
@@ -1237,16 +1237,24 @@ cv::Mat MapMerger::mapToMat(const nav_msgs::OccupancyGrid *map)
 nav_msgs::OccupancyGrid* MapMerger::matToMap(const Mat mat, nav_msgs::OccupancyGrid *forInfo)
 {
     nav_msgs::OccupancyGrid* toReturn = forInfo;
-    for(size_t i=2; i<toReturn->info.height * toReturn->info.width;i++)
+    for(size_t i=2; i < toReturn->info.height*toReturn->info.width; i++)
     {
-        //toReturn->data.push_back(mat.data[i]);
-       if(mat.data[i]== 254)//KNOWN
-           toReturn->data[i]=0;
+        // toReturn->data.push_back(mat.data[i]);
+        if(mat.data[i]== 254)//KNOWN
+        {
+            toReturn->data[i]=0;
+        }
         // here it is <10 and not 0 (like in mapToMat), becouse otherwise we loose much
-        //walls etc. but so we get a little of wrong information in the unkown area, what is
+        // walls etc. but so we get a little of wrong information in the unkown area, what is
         // not so terrible.
-        else if(mat.data[i] > -1 && mat.data[i] < 50) toReturn->data[i]=100; //WALL
-       else toReturn->data[i] = -1; //UNKOWN
+        else if(mat.data[i] < 50)
+        {
+            toReturn->data[i]=100; //WALL
+        }
+        else
+        {
+            toReturn->data[i] = -1; //UNKOWN
+        }
     }
     return toReturn;
 }
@@ -1683,13 +1691,17 @@ int MapMerger::findTransformIndex(int robot_index)
    // ROS_DEBUG("Could not found TransformIndex for robot_index:%i",robot_index);
     return -1;
 }
-    int MapMerger::findRobotIndex(int transform_index)
+
+int MapMerger::findRobotIndex(int transform_index)
 {
-    for(int i = 0; i < robots_in_transform->size(); i++)
+    for (int i = 0; i < robots_in_transform->size(); i++)
     {
-        if(robots_in_transform->at(transform_index) == robots->at(i))
+        if (robots_in_transform->at(transform_index) == robots->at(i))
+        {
             return i;
+        }
     }
+    return -1;
 }
 
 

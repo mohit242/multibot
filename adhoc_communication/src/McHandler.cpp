@@ -84,23 +84,20 @@ std::vector<McTree*> McHandler::lostConnectionUplinks(unsigned char* mac_a)
             affected_trees.push_back(tree);
         }
     }
-
-
     return affected_trees;
-
 }
 
 bool McHandler::removeGroup(std::string* group_name)
 {
     McTree* t = getMcGroup(group_name);
-    if (t == NULL)
+    if (t == nullptr)
+    {
         return false;
-    
+    }
     ROS_ERROR("remove %s",group_name->c_str());
-
     groups_->remove(t);
     delete t;
-
+    return true;
 }
 
 
@@ -256,4 +253,4 @@ void McHandler::printMcGroups()
         ROS_ERROR("NAME:[%s] ACTIVE[%u] ENTRIES: UP[%zu] DOWN[%zu] WAITING[%zu] DOWNLINKS[%zu]", tree->group_name_.c_str(), tree->activated, tree->routing_entries_l_.size(), tree->routing_entries_downlinks_l_.size(), tree->waiting_requests_l_.size(), tree->downlinks_l_.size());
     }
 }
-#endif 
+#endif

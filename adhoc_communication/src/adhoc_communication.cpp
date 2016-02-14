@@ -55,30 +55,37 @@ bool getGroupStateF(adhoc_communication::GetGroupState::Request &req, adhoc_comm
     boost::unique_lock<boost::mutex> lock(mtx_mc_groups);
     McTree *t = mc_handler.getMcGroup(&req.group_name);
 
-    if (t != NULL)
+    if (t != nullptr)
     {
         res.activated = t->activated;
         res.connected = t->connected;
         res.root = t->root;
         res.member = t->member;
 
-        for (std::list<mac*>::iterator it = t->downlinks_l_.begin(); it != t->downlinks_l_.end(); ++it)
+        for (auto it = t->downlinks_l_.begin(); it != t->downlinks_l_.end(); ++it)
         {
             mac* m = *it;
             res.downlinks.push_back(getHostnameFromMac(m->mac_adr));
         }
 
         if (!t->root)
-            res.route_uplink = "Next hop:" + getHostnameFromMac(t->route_uplink_->next_hop) + " RD:" + getIntAsString(t->route_uplink_->root_distance) + " HOBS:" + getIntAsString(t->route_uplink_->hobs) + " CH:" + getIntAsString(t->route_uplink_-> current_hop);
-
+        {
+            res.route_uplink = "Next hop:" + getHostnameFromMac(t->route_uplink_->next_hop)
+                + " RD:" + getIntAsString(t->route_uplink_->root_distance)
+                + " HOBS:" + getIntAsString(t->route_uplink_->hobs)
+                + " CH:" + getIntAsString(t->route_uplink_-> current_hop);
+        }
         else
+        {
             res.route_uplink = "";
+        }
 
         return true;
     }
     else
     {
         res.route_uplink = "No mc entry found!";
+        return false;
     }
 }
 
