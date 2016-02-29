@@ -1071,14 +1071,12 @@ int main(int argc, char **argv)
         hostname = std::string(hostname_c);
     }
 
-#ifdef PRINT_PARAMS
     ROS_ERROR("NODE STARTED WITH FOLLOWING SETTINGS:");
     ROS_ERROR("HOSTNAME[%s] MAC[%s] INTERFACE[%s]", hostname.c_str(), getMacAsStr(src_mac).c_str(), interface);
     ROS_ERROR("num_link_retrans=%u num_e2e_retrans=%u num_rreq=%u", num_link_retrans, num_e2e_retrans, num_rreq);
     ROS_ERROR("max_packet_size=%u max_frame_size=%u hop_limit_min=%u hop_limit_max=%u", max_packet_size, max_frame_size, hop_limit_min, hop_limit_max);
     ROS_ERROR("hop_limit_increment=%u beacon_interval=%u", hop_limit_increment, beacon_interval);
     ROS_ERROR("rebuild_mc_tree=%s", getBoolAsString(rebuild_mc_tree).c_str());
-#endif
 
 
     /*Advertise services and listeners*/

@@ -629,10 +629,10 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
     std::vector<int> * containedUpdates = new std::vector<int>();
     containedUpdates->push_back(update_seq);
     //todo:mc_ROBOT
-   /* for(int i = 0; i < robots->size(); i++)
+    for(int i = 0; i < robots->size(); i++)
         sendMapOverNetwork(robots->at(i),containedUpdates,min_x,min_y,max_x,max_y);
-*/
-    sendMapOverNetwork(mc_group, containedUpdates, min_x, min_y, max_x, max_y);
+
+    //sendMapOverNetwork(mc_group, containedUpdates, min_x, min_y, max_x, max_y);
     delete containedUpdates;
     //sendMapOverNetwork("",min_x,min_y,max_x,max_y);
     //send_map_over_network("");
