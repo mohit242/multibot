@@ -151,19 +151,17 @@ std::string getSerializedMessage(t message)
     return serializedMap;
 }
 
-
+/* Description:
+ * returns a C-String that displayed the mac in hex.
+ */
 /*
 const char* getMacAsCStr(unsigned char* mac)
 {
-
-    /* Description:
-     * returns a C-String that displayed the mac in hex.
-     */
-/*
     boost::format fmt("%02X-%02X-%02X-%02X-%02X-%02X");
     for (int i = 0; i != 6; ++i)
+    {
         fmt % static_cast<unsigned int> (mac[i]);
-
+    }
     return fmt.str().c_str();
 }*/
 
