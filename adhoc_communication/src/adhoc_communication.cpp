@@ -1200,7 +1200,6 @@ int main(int argc, char **argv)
         }
     }
 
-	
     if (unique_mc_group == true)
     {
 		/* Create own mc group */

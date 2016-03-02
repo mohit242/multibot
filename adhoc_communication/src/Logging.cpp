@@ -404,7 +404,7 @@ bool Logging::createLogPath()
     Logging::n->param("log_path", Logging::log_path, std::string(""));
     Logging::log_path += "/adhoc_communication/" + *robot_name + "/";
 
-    ROS_INFO("Creating log path \"%s\".", Logging::log_path.c_str());
+    ROS_DEBUG("Creating log path \"%s\".", Logging::log_path.c_str());
     boost::filesystem::path boost_log_path(log_path.c_str());
     if (!boost::filesystem::exists(boost_log_path))
         try

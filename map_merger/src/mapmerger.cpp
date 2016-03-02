@@ -387,7 +387,7 @@ void MapMerger::callback_global_pub(const ros::TimerEvent &e)
    // sendMetaData(5);
     if(robots->size() == 0)
     {
-        ROS_INFO("No other robots, publishing local map");
+        ROS_DEBUG("No other robots, publishing local map");
         if(local_map != NULL && local_map->data.size() > 0)
             pub.publish(*local_map);
         return;
@@ -555,7 +555,7 @@ void MapMerger::callback_send_map(const ros::TimerEvent &e)
 
     if (robots->size() == 0)
     {
-        ROS_WARN("Do not send map, no robots");
+        ROS_DEBUG("Do not send map, no robots");
         return;
     }
 
@@ -1709,7 +1709,7 @@ int MapMerger::findRobotIndex(int transform_index)
 bool MapMerger::createLogPath()
 {
     full_log_path = log_path + std::string("/map_merger/") + robot_name;
-    ROS_INFO("Creating log path \"%s\".", full_log_path.c_str());
+    ROS_DEBUG("Creating log path \"%s\".", full_log_path.c_str());
     boost::filesystem::path boost_log_path(full_log_path.c_str());
     if(!boost::filesystem::exists(boost_log_path))
         try{

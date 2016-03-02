@@ -1473,7 +1473,7 @@ public:
 		goal_msgs.target_pose.pose.orientation.w = 1;
 
 		ac.sendGoal(goal_msgs);
-               
+        ROS_INFO("Sent goal to planner");
         //ac.waitForResult(ros::Duration(20)); EDIT Peter: Test if it also works with smaller value!
         ac.waitForResult(ros::Duration(waitForResult)); //here Parameter!
         while (ac.getState() == actionlib::SimpleClientGoalState::PENDING)

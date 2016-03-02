@@ -35,10 +35,11 @@
 
 #define MAX_DISTANCE 2000			// max distance to starting point
 #define MAX_GOAL_RANGE 0.2			// min distance between frontiers (search)
-#define MINIMAL_FRONTIER_RANGE 0.2	// distance between frontiers (selection)
+#define MINIMAL_FRONTIER_RANGE 4	// distance between frontiers (selection)
 #define INNER_DISTANCE 5			// radius (in cells) around goal point without obstacles (backoff goal point)
 #define MAX_NEIGHBOR_DIST 1			// radius (in cells) around selected goal without obstacles
 #define CLUSTER_MERGING_DIST 0.8	// max (euclidean) distance between clusters that are merged
+const double NAVFN_TOLERANCE = 1;
 
 using namespace explorationPlanner;
 
@@ -953,7 +954,7 @@ bool ExplorationPlanner::check_trajectory_plan()
 
             std::vector<geometry_msgs::PoseStamped> global_plan;
 
-            nav.makePlan(startPointSimulated, goalPointSimulated, global_plan);
+            nav.makePlan(startPointSimulated, goalPointSimulated, NAVFN_TOLERANCE, global_plan);
             distance =  global_plan.size();
             frontiers.at(i).distance_to_robot = distance;
 
@@ -1016,7 +1017,7 @@ int ExplorationPlanner::calculate_travel_path(double x, double y)
 
     std::vector<geometry_msgs::PoseStamped> global_plan;
 
-    bool successful = nav.makePlan(startPointSimulated, goalPointSimulated, global_plan);
+    bool successful = nav.makePlan(startPointSimulated, goalPointSimulated, NAVFN_TOLERANCE, global_plan);
 
     ROS_INFO("Plan elements: %f", (double)global_plan.size()*0.02);
 
@@ -1083,7 +1084,7 @@ int ExplorationPlanner::check_trajectory_plan(double x, double y)
 //    base_local_planner::TrajectoryPlannerROS tp;
 //    tp.initialize("my_trajectory_planner", &tf_planner, &costmap_global_ros_);
 
-    bool successful = nav.makePlan(startPointSimulated, goalPointSimulated, global_plan);
+    bool successful = nav.makePlan(startPointSimulated, goalPointSimulated, NAVFN_TOLERANCE, global_plan);
 
     if(successful == true)
     {
@@ -1142,7 +1143,7 @@ int ExplorationPlanner::estimate_trajectory_plan(double start_x, double start_y,
 
     std::vector<geometry_msgs::PoseStamped> global_plan;
 
-    bool successful = nav.makePlan(startPointSimulated, goalPointSimulated, global_plan);
+    bool successful = nav.makePlan(startPointSimulated, goalPointSimulated, NAVFN_TOLERANCE, global_plan);
 
     if(successful == true)
     {
