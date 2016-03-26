@@ -1,4 +1,4 @@
-/* 
+/*
  * File:   McNackFrame.h
  * Author: cwioro
  *
@@ -6,9 +6,10 @@
  */
 
 #ifndef MCNACKFRAME_H
-#define	MCNACKFRAME_H
+#define MCNACKFRAME_H
 
-struct mc_nack_header {
+struct mc_nack_header
+{
     uint8_t frame_type;
     uint32_t id;
     uint32_t packet_id;
@@ -18,20 +19,19 @@ struct mc_nack_header {
 
 } __attribute__((packed));
 
-class McNackFrame : public EthernetFrame {
-public:
-
-    McNackFrame(unsigned char* source, unsigned char* dest, std::string hostname_src, std::string group_n, uint32_t p_id, std::vector<uint32_t> seq_n);
-    McNackFrame(unsigned char* buffer);
+class McNackFrame : public EthernetFrame
+{
+  public:
+    McNackFrame(unsigned char *source, unsigned char *dest,
+                std::string hostname_src, std::string group_n, uint32_t p_id,
+                std::vector<uint32_t> seq_n);
+    McNackFrame(unsigned char *buffer);
     virtual ~McNackFrame();
-
 
     struct mc_nack_header header_;
     std::string hostname_source_;
     std::string mc_group_;
     std::vector<uint32_t> req_seq_nums_;
-
-
 
     uint16_t buffer_str_len_;
 
@@ -44,11 +44,10 @@ public:
 
     void print_frame();
 
-private:
-
+  private:
 };
-uint32_t McNackFrame::HEADER_FIXED_LEN = sizeof (eh_header) + sizeof (mc_nack_header);
+uint32_t McNackFrame::HEADER_FIXED_LEN =
+    sizeof(eh_header) + sizeof(mc_nack_header);
 uint32_t McNackFrame::stat_id_count = 0;
 
-#endif	/* MCNACKFRAME_H */
-
+#endif /* MCNACKFRAME_H */

@@ -20,34 +20,41 @@
 #include "munkres.h"
 
 template <typename T>
-Matrix <T> convert_boost_matrix_to_munkres_matrix (const boost::numeric::ublas::matrix <T> & boost_matrix)
+Matrix<T> convert_boost_matrix_to_munkres_matrix(
+    const boost::numeric::ublas::matrix<T> &boost_matrix)
 {
-  const int dimention = std::min (boost_matrix.size1 (), boost_matrix.size2 () );
-  Matrix <T> matrix (dimention, dimention);
-  for (int i = 0; i < dimention; ++i) {
-    for (int j = 0; j < dimention; ++j) {       
-        matrix (i, j) = boost_matrix (i, j);   
+    const int dimention = std::min(boost_matrix.size1(), boost_matrix.size2());
+    Matrix<T> matrix(dimention, dimention);
+    for (int i = 0; i < dimention; ++i)
+    {
+        for (int j = 0; j < dimention; ++j)
+        {
+            matrix(i, j) = boost_matrix(i, j);
+        }
     }
-  }
 
-  return matrix;
+    return matrix;
 };
 
 template <typename T>
-void fill_boost_matrix_from_munkres_matrix (boost::numeric::ublas::matrix <T> & boost_matrix, const Matrix <T> & matrix)
+void fill_boost_matrix_from_munkres_matrix(
+    boost::numeric::ublas::matrix<T> &boost_matrix, const Matrix<T> &matrix)
 {
-  const int dimention = std::min (boost_matrix.size1 (), boost_matrix.size2 () );
-  for (int i = 0; i < dimention; ++i) {
-    for (int j = 0; j < dimention; ++j) {
-      boost_matrix (i, j) = matrix (i, j);
+    const int dimention = std::min(boost_matrix.size1(), boost_matrix.size2());
+    for (int i = 0; i < dimention; ++i)
+    {
+        for (int j = 0; j < dimention; ++j)
+        {
+            boost_matrix(i, j) = matrix(i, j);
+        }
     }
-  }
 };
 
-void solve(boost::numeric::ublas::matrix <double> & boost_matrix)
+void solve(boost::numeric::ublas::matrix<double> &boost_matrix)
 {
-  Matrix <double> matrix = convert_boost_matrix_to_munkres_matrix<double>(boost_matrix);
-  Munkres munkres;
-  munkres.solve (matrix);
-  fill_boost_matrix_from_munkres_matrix<double>(boost_matrix, matrix);
+    Matrix<double> matrix =
+        convert_boost_matrix_to_munkres_matrix<double>(boost_matrix);
+    Munkres munkres;
+    munkres.solve(matrix);
+    fill_boost_matrix_from_munkres_matrix<double>(boost_matrix, matrix);
 };
