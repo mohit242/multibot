@@ -21,35 +21,32 @@
 
 #include <initializer_list>
 
-template <class T>
-class Matrix {
-public:
-  Matrix();
-  Matrix(unsigned int rows, unsigned int columns);
-//  Matrix(std::initializer_list<std::initializer_list<T>> init);
-  Matrix(const Matrix<T> &other);
-  Matrix<T> & operator= (const Matrix<T> &other);
-  ~Matrix();
-  // all operations modify the matrix in-place.
-  void resize(unsigned int rows, unsigned int columns, T default_value = 0);
-  void clear(void);
-  T& operator () (unsigned int x, unsigned int y);
-  const T& operator () (unsigned int x, unsigned int y) const;
-  const T min() const;
-  const T max() const;
-  inline unsigned int minsize(void) {
-    return ((m_rows < m_columns) ? m_rows : m_columns);
-  }
-  inline unsigned int columns(void) const {
-    return m_columns;
-  }
-  inline unsigned int rows(void) const {
-    return m_rows;
-  }
-private:
-  T **m_matrix;
-  unsigned int m_rows;
-  unsigned int m_columns;
+template <class T> class Matrix
+{
+  public:
+    Matrix();
+    Matrix(unsigned int rows, unsigned int columns);
+    //  Matrix(std::initializer_list<std::initializer_list<T>> init);
+    Matrix(const Matrix<T> &other);
+    Matrix<T> &operator=(const Matrix<T> &other);
+    ~Matrix();
+    // all operations modify the matrix in-place.
+    void resize(unsigned int rows, unsigned int columns, T default_value = 0);
+    void clear(void);
+    T &operator()(unsigned int x, unsigned int y);
+    const T &operator()(unsigned int x, unsigned int y) const;
+    const T min() const;
+    const T max() const;
+    inline unsigned int minsize(void)
+    {
+        return ((m_rows < m_columns) ? m_rows : m_columns);
+    }
+    inline unsigned int columns(void) const { return m_columns; }
+    inline unsigned int rows(void) const { return m_rows; }
+  private:
+    T **m_matrix;
+    unsigned int m_rows;
+    unsigned int m_columns;
 };
 
 #ifndef USE_EXPORT_KEYWORD
@@ -58,4 +55,3 @@ private:
 #endif
 
 #endif /* !defined(_MATRIX_H_) */
-

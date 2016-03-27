@@ -1,81 +1,64 @@
-/* 
+/*
  * File:   McHandler.cpp
  * Author: cwioro
- * 
+ *
  * Created on May 21, 2014, 12:11 PM
  */
 
-
-
-#include <string>
 #include <list>
+#include <string>
 
 #include "McHandler.h"
 #include "defines.h"
 
-McHandler::McHandler(list<McTree*> *groups)
-{
-    this->groups_ = groups;
-}
+McHandler::McHandler(list<McTree *> *groups) { this->groups_ = groups; }
 
-McHandler::McHandler(const McHandler& orig)
-{
-}
+McHandler::McHandler(const McHandler &orig) {}
 
-McHandler::~McHandler()
-{
-}
+McHandler::~McHandler() {}
 
-McTree* McHandler::getMcGroup(std::string* group_name)
+McTree *McHandler::getMcGroup(std::string *group_name)
 {
 
-
-
-    for (std::list<McTree*>::iterator it = groups_->begin(); it != groups_->end(); ++it)
+    for (std::list<McTree *>::iterator it = groups_->begin();
+         it != groups_->end(); ++it)
     {
-
 
         if ((*it)->group_name_.compare(*group_name) == 0)
             return *it;
     }
 
-
-
     return NULL;
-
 }
 
-std::vector<McTree*> McHandler::lostConnectionDownlinks(unsigned char* mac_a)
+std::vector<McTree *> McHandler::lostConnectionDownlinks(unsigned char *mac_a)
 {
 
-
-    std::vector<McTree*> affected_trees;
-    for (std::list<McTree*>::iterator it = groups_->begin(); it != groups_->end(); ++it)
+    std::vector<McTree *> affected_trees;
+    for (std::list<McTree *>::iterator it = groups_->begin();
+         it != groups_->end(); ++it)
     {
 
-        McTree* tree = *it;
-
+        McTree *tree = *it;
 
         if (tree->removeMacIfExsists(mac_a))
         {
-
 
             affected_trees.push_back(*it);
         }
     }
 
     return affected_trees;
-
 }
 
-std::vector<McTree*> McHandler::lostConnectionUplinks(unsigned char* mac_a)
+std::vector<McTree *> McHandler::lostConnectionUplinks(unsigned char *mac_a)
 {
 
-
-    std::vector<McTree*> affected_trees;
-    for (std::list<McTree*>::iterator it = groups_->begin(); it != groups_->end(); ++it)
+    std::vector<McTree *> affected_trees;
+    for (std::list<McTree *>::iterator it = groups_->begin();
+         it != groups_->end(); ++it)
     {
-        McTree* tree = *it;
+        McTree *tree = *it;
 
         if (compareMac(tree->route_uplink_->next_hop, mac_a))
         {
@@ -87,46 +70,43 @@ std::vector<McTree*> McHandler::lostConnectionUplinks(unsigned char* mac_a)
     return affected_trees;
 }
 
-bool McHandler::removeGroup(std::string* group_name)
+bool McHandler::removeGroup(std::string *group_name)
 {
-    McTree* t = getMcGroup(group_name);
+    McTree *t = getMcGroup(group_name);
     if (t == nullptr)
     {
         return false;
     }
-    ROS_ERROR("remove %s",group_name->c_str());
+    ROS_ERROR("remove %s", group_name->c_str());
     groups_->remove(t);
     delete t;
     return true;
 }
 
-
-McTree* McHandler::getMcGroup(std::string* hostname_source, uint32_t* route_id)
+McTree *McHandler::getMcGroup(std::string *hostname_source, uint32_t *route_id)
 {
 
-
-
-    for (std::list<McTree*>::iterator it = groups_->begin(); it != groups_->end(); ++it)
+    for (std::list<McTree *>::iterator it = groups_->begin();
+         it != groups_->end(); ++it)
     {
-        McTree* tree = *it;
+        McTree *tree = *it;
 
-
-        for (std::list<routing_entry*>::iterator it_r = tree->routing_entries_l_.begin(); it_r != tree->routing_entries_l_.end(); ++it_r)
+        for (std::list<routing_entry *>::iterator it_r =
+                 tree->routing_entries_l_.begin();
+             it_r != tree->routing_entries_l_.end(); ++it_r)
         {
 
-
-            if ((*it_r)->id == *route_id && (*it_r)->hostname_source.compare(*hostname_source) == 0)
+            if ((*it_r)->id == *route_id &&
+                (*it_r)->hostname_source.compare(*hostname_source) == 0)
                 return *it;
         }
     }
 
-
     return NULL;
 }
 
-void McHandler::createGroupAsRoot(std::string* group_name)
+void McHandler::createGroupAsRoot(std::string *group_name)
 {
-
 
     /* Create own mc group */
 
@@ -135,38 +115,35 @@ void McHandler::createGroupAsRoot(std::string* group_name)
 #ifdef MC_HANDLER_OUPUT
     ROS_ERROR("CREATE GROUP AS ROOT: %s", group_name->c_str());
 #endif
-
 }
 
-void McHandler::addGroup(std::string* group_name)
+void McHandler::addGroup(std::string *group_name)
 {
 
     if (getMcGroup(group_name) == NULL)
     {
         this->createGroup(group_name, false, false, false, false, -1);
-
     }
-
 
 #ifdef MC_HANDLER_OUPUT
     ROS_ERROR("CREATE GROUP AS ROOT: %s", group_name->c_str());
 #endif
-
 }
 
-bool McHandler::addUplinkRoute(routing_entry* route)
+bool McHandler::addUplinkRoute(routing_entry *route)
 {
 
-    McTree* t = this->getMcGroup(&route->hostname_destination);
+    McTree *t = this->getMcGroup(&route->hostname_destination);
     if (t == NULL)
-        createGroup(&route->hostname_destination, false, false, true, false, route->root_distance);
+        createGroup(&route->hostname_destination, false, false, true, false,
+                    route->root_distance);
 
     t = this->getMcGroup(&route->hostname_destination);
 
-
-
-    /* check if response is not from a node with a lower root distance and if the route dont exsists already*/
-    if (route->root_distance <= t->route_uplink_->root_distance && t->routeIsNew(route))
+    /* check if response is not from a node with a lower root distance and if
+     * the route dont exsists already*/
+    if (route->root_distance <= t->route_uplink_->root_distance &&
+        t->routeIsNew(route))
     {
 
         t->routing_entries_l_.push_front(route);
@@ -176,31 +153,23 @@ bool McHandler::addUplinkRoute(routing_entry* route)
     {
         return false;
     }
-
-
-
-
 }
 
-void McHandler::addDownlinkRoute(routing_entry* route)
+void McHandler::addDownlinkRoute(routing_entry *route)
 {
 
-    McTree* t = this->getMcGroup(&route->hostname_destination);
+    McTree *t = this->getMcGroup(&route->hostname_destination);
     if (t == NULL)
-        ROS_ERROR("Unexpected failure: want insert downlink route, but mc tree does not exists");
-
+        ROS_ERROR("Unexpected failure: want insert downlink route, but mc tree "
+                  "does not exists");
 
     t->routing_entries_downlinks_l_.push_front(route);
-
-
-
-
-
 }
 
-void McHandler::createGroup(std::string* group_name, bool root, bool member, bool connected, bool activated, uint16_t root_distance)
+void McHandler::createGroup(std::string *group_name, bool root, bool member,
+                            bool connected, bool activated,
+                            uint16_t root_distance)
 {
-
 
     McTree *my_mc_group = new McTree();
     my_mc_group->group_name_ = *group_name;
@@ -223,7 +192,6 @@ void McHandler::createGroup(std::string* group_name, bool root, bool member, boo
         my_mc_group->route_uplink_->hobs = 0;
         my_mc_group->route_uplink_->current_hop = 0;
         my_mc_group->route_uplink_->root_distance = 0;
-
     }
     else
     {
@@ -232,12 +200,10 @@ void McHandler::createGroup(std::string* group_name, bool root, bool member, boo
         my_mc_group->route_uplink_->root_distance = 0 - 1;
     }
 
-
     this->groups_->push_front(my_mc_group);
-
 }
 
-void McHandler::setMembership(std::string* group_name, bool membership)
+void McHandler::setMembership(std::string *group_name, bool membership)
 {
     this->getMcGroup(group_name)->member = membership;
 }
@@ -247,10 +213,16 @@ void McHandler::setMembership(std::string* group_name, bool membership)
 void McHandler::printMcGroups()
 {
 
-    for (std::list<McTree*>::iterator it = groups_->begin(); it != groups_->end(); ++it)
+    for (std::list<McTree *>::iterator it = groups_->begin();
+         it != groups_->end(); ++it)
     {
-        McTree* tree = *it;
-        ROS_ERROR("NAME:[%s] ACTIVE[%u] ENTRIES: UP[%zu] DOWN[%zu] WAITING[%zu] DOWNLINKS[%zu]", tree->group_name_.c_str(), tree->activated, tree->routing_entries_l_.size(), tree->routing_entries_downlinks_l_.size(), tree->waiting_requests_l_.size(), tree->downlinks_l_.size());
+        McTree *tree = *it;
+        ROS_ERROR("NAME:[%s] ACTIVE[%u] ENTRIES: UP[%zu] DOWN[%zu] "
+                  "WAITING[%zu] DOWNLINKS[%zu]",
+                  tree->group_name_.c_str(), tree->activated,
+                  tree->routing_entries_l_.size(),
+                  tree->routing_entries_downlinks_l_.size(),
+                  tree->waiting_requests_l_.size(), tree->downlinks_l_.size());
     }
 }
 #endif
