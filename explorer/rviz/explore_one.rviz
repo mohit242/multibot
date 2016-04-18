@@ -254,7 +254,7 @@ Visualization Manager:
         Value: false
       Name: Current View
       Near Clip Distance: 0.01
-      Scale: 45.3433
+      Scale: 83.2386
       Target Frame: base_link
       Value: TopDownOrtho (rviz)
       X: 0

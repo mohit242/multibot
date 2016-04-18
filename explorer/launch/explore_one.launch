@@ -85,7 +85,7 @@ map_update_interval: 1.0
 	Make our robot movable with this simple package. 
 	NOTICE: The package should be not from original, but from https://github.com/LeoSko/teleop_twist_keyboard
 -->
-<node name="teleop_twist_keyboard_0" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t /cmd_vel" respawn="true"/>
+<!--node name="teleop_twist_keyboard_0" pkg="teleop_twist_keyboard" type="teleop_twist_keyboard.py" output="screen" launch-prefix="xterm -e" args="-t /cmd_vel" respawn="true"/-->
 <!-- 
 	Start navigation stack
 -->
@@ -124,6 +124,9 @@ map_update_interval: 1.0
 	<rosparam file="$(find explorer)/param/simulation_global_costmap_params.yaml" command="load" />
 	<rosparam file="$(find explorer)/param/base_local_planner_params.yaml" command="load" />
     
+</node>
+<!-- Creating bag-file with exploration -->
+<node name="bagger" pkg="rosbag" type="record" args="-a --duration=30m">
 </node>
 <!--
   Visualising the robot while building a map or navigating.
