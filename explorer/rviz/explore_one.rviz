@@ -4,7 +4,6 @@ Panels:
     Name: Displays
     Property Tree Widget:
       Expanded:
-        - /MarkerArray1
         - /MarkerArray1/Namespaces1
       Splitter Ratio: 0.489028
     Tree Height: 555
