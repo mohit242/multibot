@@ -43,5 +43,25 @@ echo ". ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 sudo chown root ~/catkin_ws/devel/lib/adhoc_communication/adhoc_communication
 sudo chmod +s ~/catkin_ws/devel/lib/adhoc_communication/adhoc_communication
 
-echo "We are launching exploration for one robot as an example."
-xterm -e roslaunch explorer explore_one.launch
+#create dirs for testing results
+md ~/test_results
+md ~/test_results/all
+
+#create maze generator
+cd ~/catkin_ws
+git clone https://github.com/trosne/amaze.git
+cd amaze
+make
+
+#install image converter
+sudo apt-get install imagemagick imagemagick-doc
+
+#install data processing helper
+cd ~/catkin_ws
+wget http://files.housegordon.org/datamash/bin/datamash_1.0.6-1_amd64.deb
+sudo dpkg -i datamash_1.0.6-1_amd64.deb
+rm datamash_1.0.6-1_amd64.deb
+
+echo "Launch run_slam_tests.sh to start testing"
+#echo "We are launching exploration for one robot as an example."
+#xterm -e roslaunch explorer explore_one.launch
