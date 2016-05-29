@@ -1,15 +1,16 @@
 
 mazeSizeMin=2
-mazeSizeMax=4
-testCount=3
-rosLaunchTimeout=300
+mazeSizeMax=2
+testCount=30
+rosLaunchTimeout=1800
 #YOU NEED TO SPECIFY CORRECT DISPLAY TO GET STAGE SIMULATOR RUNNING
 DISPLAY=:100
 
 curTimeStamp=`echo $(date +'%s')`
 status=`rospack find explorer`/simulation_status/robot_0.finished
+testLogFile=~/test_results/log$curTimeStamp.log
 
-for mazeSize in {$mazeSizeMin..$mazeSizeMax}
+for ((mazeSize=$mazeSizeMin; mazeSize<=$mazeSizeMax; mazeSize++))
 do
 	mainRes=~/test_results/all/res$mazeSize.log
 	echo -e "mean(exploration_time)\tmean(required_goals)\tmean(travel_path_overall)\tmean(unreachable_goals)\tmean(complete)\tmean(map_error)" >> $mainRes
@@ -40,25 +41,34 @@ do
 	cp $worldDir/$mazeFileName $worldDir/small_world.png
 	
 	#now run tests on this maze
-	for i in {1..$testCount}
+	for ((i=1; i<=$testCount; i++))
 	do
 		echo "Launched test #$i for maze $mazeFileName"
 		rm $status
-		timeout $rosLaunchTimeout roslaunch explorer just_explore_one.launch &
-		
+		timeout $rosLaunchTimeout roslaunch explorer just_explore_one.launch &> $testLogFile &
+		rospid=`ps | grep roslaunch | xargs | cut -d' ' -f1`
+
 		# wait until exploration is finished, or timeout is exceeded
 		sleep 5
-		test=`ps -e | grep roslaunch`
-		until [ -e $status ] || [ -z "$test" ];
+		waited=0
+		until [ -e $status ] || [ -z "$rospid" ];
 		do
-			echo "Waiting for $status to be created to kill ROS process or roslaunch to finish"
+			echo "[$waited] Waiting for $status to be created or roslaunch [$rospid] to finish"
 			sleep 5
-			test=`ps -e | grep roslaunch`
+			rospid=`ps | grep roslaunch | xargs | cut -d' ' -f1`
+			let "waited=5+$waited"
+			if [ "$waited" -ge "$rosLaunchTimeout" ]
+			then
+				kill $rospid
+			fi
 		done
 
+		echo "Waiting to ensure we can continue"
+		sleep 20
 		echo "Killing ROS (if not finished yet)"
-		kill `ps | grep roslaunch | cut -d" " -f1`
-		wait `cat ~/.ros/*.pid`
+		kill $rospid
+		wait $rospid
+		sleep 30
 		
 		# in case ROS not finished, there will be another file about exploration
 		if [ -e $status ]
