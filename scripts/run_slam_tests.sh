@@ -1,6 +1,6 @@
 
 mazeSizeMin=2
-mazeSizeMax=2
+mazeSizeMax=6
 testCount=30
 rosLaunchTimeout=1800
 #YOU NEED TO SPECIFY CORRECT DISPLAY TO GET STAGE SIMULATOR RUNNING
@@ -45,7 +45,7 @@ do
 	do
 		echo "Launched test #$i for maze $mazeFileName"
 		rm $status
-		timeout $rosLaunchTimeout roslaunch explorer just_explore_one.launch &> $testLogFile &
+		timeout $rosLaunchTimeout roslaunch explorer just_explore_one.launch &>> $testLogFile &
 		rospid=`ps | grep roslaunch | xargs | cut -d' ' -f1`
 
 		# wait until exploration is finished, or timeout is exceeded
